@@ -1,0 +1,1839 @@
+/* RESET GLOBAL */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Fundo da Página (Papel Milimetrado/Quadriculado) */
+body {
+    background-color: #fdfbf7;
+    background-image: 
+        linear-gradient(#e8e6e1 1px, transparent 1px),
+        linear-gradient(90deg, #e8e6e1 1px, transparent 1px);
+    background-size: 20px 20px; /* Tamanho dos quadradinhos */
+    color: #333;
+}
+
+/* FAIXA DE LEGO NO TOPO */
+.lego-topbar {
+    width: 100%;
+    height: 48px; /* Faixa ampliada para exibir um pouco mais dos blocos de Lego */
+    background-image: url('imgs/legoheader.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-bottom: 2px solid #222; /* Linha sutil separando do menu */
+}
+
+/* NAVBAR (MENU) */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 5%;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-bottom: 1px solid #ddd;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    min-width: 140px;
+}
+
+.logo-ufpr-link {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    max-height: 40px;
+}
+
+.logo-ufpr,
+.nav-left img {
+    max-height: 38px;
+    max-width: 90px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.logo-ufpr:hover,
+.nav-left img:hover {
+    transform: scale(1.04);
+    opacity: 0.85;
+}
+
+/* Fallback/Placeholder */
+.logo-ufpr-placeholder {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px;
+    background-color: #f0f4f8;
+    border: 1.5px dashed #004b87;
+    border-radius: 6px;
+    color: #004b87;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.nav-center {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #111;
+    letter-spacing: 2px;
+    line-height: 1;
+    text-align: center;
+}
+
+.nav-right {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 20px;
+    min-width: 140px;
+}
+
+.nav-right a {
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #444;
+    transition: color 0.3s ease;
+}
+
+.nav-right a:hover {
+    color: #d32f2f;
+}
+
+/* CONTAINER E GRID DOS CARTÕES */
+.container {
+    max-width: 1200px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+.card-grid {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap; /* Permite quebrar linha em telas menores */
+}
+
+/* ESTILO INDIVIDUAL DO CARTÃO */
+.card {
+    background-color: #ffffff;
+    flex: 1;
+    min-width: 250px;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+/* ÁREA DA IMAGEM (Placeholder) */
+.card-image {
+    width: 100%;
+    height: 280px; /* Altura generosa para ilustrações isométricas */
+    background-color: #f0f3f5; /* Cor de fundo provisória */
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* Estilo apenas para o texto de marcação onde entrarão as imagens */
+.placeholder-text {
+    color: #999;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Imagem real dentro do card */
+.card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ÁREA DE TEXTO DO CARTÃO */
+.card-content {
+    padding: 24px 16px;
+    text-align: center;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.card-content h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+
+.card-content p {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.4;
+    font-weight: 400;
+}
+
+/* RESPONSIVIDADE (Tablets e Celulares) */
+@media (max-width: 900px) {
+    .card-grid {
+        justify-content: center;
+    }
+    .card {
+        flex: 0 1 calc(50% - 24px); /* 2 cartões por linha no tablet */
+    }
+}
+
+@media (max-width: 600px) {
+    .navbar {
+        flex-direction: column;
+        gap: 12px;
+    }
+    .nav-left, .nav-right {
+        text-align: center;
+        justify-content: center;
+        width: auto;
+    }
+    .card {
+        flex: 1 1 100%; /* 1 cartão por linha no celular */
+    }
+}
+
+/* RODAPÉ (FOOTER) */
+.footer {
+    background-color: #ffffff;
+    border-top: 1px solid #e0e0e0;
+    margin-top: 80px;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.02);
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 50px 20px 40px;
+    display: grid;
+    grid-template-columns: 1.4fr 1.1fr 1fr 1.1fr;
+    gap: 40px;
+}
+
+.footer-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 18px;
+    position: relative;
+    padding-bottom: 8px;
+}
+
+.footer-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 32px;
+    height: 3px;
+    background-color: #d32f2f;
+    border-radius: 2px;
+}
+
+.footer-text {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+.footer-institution {
+    font-size: 0.85rem;
+    color: #555;
+    line-height: 1.5;
+}
+
+.footer-institution strong {
+    color: #004b87;
+}
+
+.footer-links,
+.footer-info {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li,
+.footer-info li {
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.4;
+}
+
+.footer-links a {
+    color: #555;
+    text-decoration: none;
+    transition: color 0.2s ease, transform 0.2s ease;
+    display: inline-block;
+}
+
+.footer-links a:hover {
+    color: #d32f2f;
+    transform: translateX(4px);
+}
+
+.footer-info strong {
+    color: #333;
+}
+
+.footer-bottom {
+    border-top: 1px solid #ebebeb;
+    padding: 20px;
+    text-align: center;
+    background-color: #faf9f6;
+}
+
+.footer-bottom p {
+    font-size: 0.85rem;
+    color: #777;
+}
+
+/* Responsividade do Rodapé */
+@media (max-width: 900px) {
+    .footer-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+    }
+}
+
+@media (max-width: 600px) {
+    .footer-container {
+        grid-template-columns: 1fr;
+        padding: 40px 20px 30px;
+    }
+}
+
+/* ===================================================
+   COMPONENTE INTERATIVO: SETOR DE CORTE (ESTÉTICA LEGO)
+   =================================================== */
+
+/* Header da Página de Corte */
+.sector-header {
+    text-align: center;
+    margin-bottom: 36px;
+}
+
+.sector-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #ffeb3b;
+    color: #b71c1c;
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 6px 16px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    border: 2px solid #fbc02d;
+    box-shadow: 0 3px 0 #f57f17;
+}
+
+.sector-header h1 {
+    font-size: 2.3rem;
+    font-weight: 900;
+    color: #111;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+
+.sector-header p {
+    font-size: 1.05rem;
+    color: #444;
+    max-width: 650px;
+    margin: 0 auto;
+    font-weight: 500;
+}
+
+/* Grid Principal em 2 Colunas */
+.corte-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.25fr;
+    gap: 28px;
+    align-items: stretch;
+}
+
+/* Painéis Base Estilo Bloco Lego */
+.panel-card {
+    background-color: #ffffff;
+    border: 2px solid #e0e0e0;
+    border-radius: 14px;
+    padding: 26px;
+    box-shadow: 0 6px 0 #cfd8dc, 0 12px 28px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* Faixa decorativa de mini studs Lego no topo do card */
+.panel-card::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 24px;
+    right: 24px;
+    height: 6px;
+    background: radial-gradient(circle, #d32f2f 40%, #b71c1c 42%, transparent 44%) 0 0/16px 6px,
+                radial-gradient(circle, #1976d2 40%, #0d47a1 42%, transparent 44%) 8px 0/16px 6px;
+    background-repeat: repeat-x;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 3px solid #f0f2f5;
+}
+
+.panel-header h2 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #222;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Status Pill Estilo Peça Lego */
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    padding: 5px 12px;
+    border-radius: 6px;
+    background-color: #eceff1;
+    color: #546e7a;
+    border: 1.5px solid #cfd8dc;
+    box-shadow: 0 2px 0 #b0bec5;
+    transition: all 0.3s ease;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #90a4ae;
+    box-shadow: inset 0 2px 2px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.status-pill.active {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border-color: #a5d6a7;
+    box-shadow: 0 2px 0 #81c784;
+}
+
+.status-pill.active .status-dot {
+    background-color: #43a047;
+    box-shadow: 0 0 8px #43a047, inset 0 1px 2px #fff;
+}
+
+/* ===================================================
+   BOTÕES EM BLOCO LEGO 3D
+   =================================================== */
+.btn-power-container {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+}
+
+.btn-ligar-serra {
+    flex: 1;
+    background-color: #e53935;
+    background-image: linear-gradient(180deg, #ef5350 0%, #e53935 50%, #d32f2f 100%);
+    color: #ffffff;
+    border: 2px solid #b71c1c;
+    border-top: 2px solid #ff7961;
+    border-radius: 10px;
+    padding: 15px 20px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 6px 0 #9a1b1b, 0 10px 18px rgba(0, 0, 0, 0.22);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+    user-select: none;
+    position: relative;
+}
+
+.btn-ligar-serra:hover:not(:disabled) {
+    background-image: linear-gradient(180deg, #ff6659 0%, #f44336 50%, #e53935 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 0 #9a1b1b, 0 12px 22px rgba(0, 0, 0, 0.28);
+}
+
+.btn-ligar-serra:active:not(:disabled) {
+    transform: translateY(6px);
+    box-shadow: 0 0 0 #9a1b1b, 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.btn-ligar-serra:disabled {
+    background: #cfd8dc;
+    border-color: #b0bec5;
+    color: #78909c;
+    cursor: not-allowed;
+    box-shadow: 0 3px 0 #90a4ae;
+    transform: none;
+}
+
+.btn-reset {
+    background-color: #eceff1;
+    background-image: linear-gradient(180deg, #ffffff 0%, #eceff1 100%);
+    border: 2px solid #b0bec5;
+    border-top: 2px solid #ffffff;
+    border-radius: 10px;
+    padding: 15px 18px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #455a64;
+    cursor: pointer;
+    box-shadow: 0 5px 0 #90a4ae, 0 8px 14px rgba(0,0,0,0.1);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.btn-reset:hover {
+    background-color: #f5f7fa;
+    transform: translateY(-2px);
+    box-shadow: 0 7px 0 #90a4ae, 0 10px 16px rgba(0,0,0,0.14);
+}
+
+.btn-reset:active {
+    transform: translateY(5px);
+    box-shadow: 0 0 0 #90a4ae, 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* ===================================================
+   ÁREA INTERATIVA: BASEPLATE LEGO & MÁQUINA DE BLOCOS
+   =================================================== */
+
+.machine-stage {
+    position: relative;
+    /* Baseplate cinza com pinos de Lego repetidos */
+    background-color: #cfd8dc;
+    background-image: 
+        radial-gradient(circle at 50% 35%, #eceff1 22%, #b0bec5 28%, #90a4ae 34%, transparent 36%);
+    background-size: 24px 24px;
+    background-position: 0 0;
+    border: 3px solid #90a4ae;
+    border-radius: 12px;
+    padding: 28px 16px;
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    user-select: none;
+    box-shadow: inset 0 4px 10px rgba(0,0,0,0.15);
+}
+
+/* Serra Elétrica (Montagem de Lego) */
+.saw-wrapper {
+    position: relative;
+    cursor: not-allowed;
+    opacity: 0.45;
+    transition: opacity 0.4s ease, transform 0.15s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+}
+
+.saw-wrapper.ready {
+    opacity: 1;
+    cursor: pointer;
+}
+
+.saw-wrapper.ready:hover {
+    transform: scale(1.04);
+}
+
+.saw-wrapper.ready:active {
+    transform: scale(0.96);
+}
+
+/* Animação de Vibração Contínua ao Ligar */
+.saw-wrapper.vibrating {
+    animation: legoVibrate 0.1s infinite linear alternate;
+}
+
+@keyframes legoVibrate {
+    0% { transform: translate(-1.5px, 1.5px) rotate(-0.5deg); }
+    100% { transform: translate(1.5px, -1.5px) rotate(0.5deg); }
+}
+
+/* Estrutura da Máquina de Blocos */
+.saw-machine {
+    width: 240px;
+    height: 150px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Braço / Suporte da Máquina em Bloco Vermelho Lego */
+.saw-arm {
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    width: 140px;
+    height: 42px;
+    background: #d32f2f;
+    background-image: linear-gradient(180deg, #ef5350 0%, #d32f2f 60%, #b71c1c 100%);
+    border: 3px solid #7f0000;
+    border-radius: 6px;
+    box-shadow: 0 5px 0 #7f0000, 0 8px 16px rgba(0,0,0,0.25);
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 8px;
+}
+
+/* Studs de Lego no braço da serra */
+.saw-arm::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 10px;
+    right: 10px;
+    height: 6px;
+    background: radial-gradient(circle at 50% 30%, #ff867c 35%, #b71c1c 45%, transparent 48%) 0 0/24px 6px;
+    background-repeat: repeat-x;
+}
+
+/* Disco de Serra Dentada Lego */
+.saw-blade-disc {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #eceff1 25%, #cfd8dc 50%, #90a4ae 80%);
+    border: 5px dashed #37474f;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.saw-wrapper.vibrating .saw-blade-disc {
+    animation: spinLegoBlade 0.25s infinite linear;
+}
+
+@keyframes spinLegoBlade {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.saw-blade-center {
+    width: 32px;
+    height: 32px;
+    background: #ffeb3b;
+    border: 3px solid #f57f17;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Tábua de Madeira Estilo Peça Lego (Tile Marrom com Pinos) */
+.wood-board {
+    width: 270px;
+    height: 42px;
+    background: #a1622b;
+    background-image: linear-gradient(180deg, #b87a3e 0%, #a1622b 60%, #7c4416 100%);
+    border: 3px solid #542c0c;
+    border-radius: 6px;
+    box-shadow: 0 6px 0 #542c0c, 0 10px 16px rgba(0, 0, 0, 0.2);
+    margin-top: -16px;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Pinos de Lego na tábua */
+.wood-board::before {
+    content: '';
+    position: absolute;
+    top: -7px;
+    left: 8px;
+    right: 8px;
+    height: 5px;
+    background: radial-gradient(circle at 50% 30%, #d89656 35%, #542c0c 45%, transparent 48%) 0 0/24px 5px;
+    background-repeat: repeat-x;
+}
+
+.wood-text {
+    font-size: 0.8rem;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Instrução e Dica de Ação */
+.machine-hint {
+    margin-top: 16px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #37474f;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.85);
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid #b0bec5;
+}
+
+.machine-hint.ready-pulse {
+    color: #b71c1c;
+    border-color: #ef9a9a;
+    background: #ffebee;
+    animation: legoPulse 1.2s infinite ease-in-out;
+}
+
+@keyframes legoPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+}
+
+/* Texto Flutuante (+ R$ 15,00) */
+.floating-cost {
+    position: absolute;
+    color: #2e7d32;
+    background: #e8f5e9;
+    border: 2px solid #43a047;
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 1.15rem;
+    font-weight: 900;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+    z-index: 20;
+    animation: legoFloat 0.9s forwards ease-out;
+}
+
+@keyframes legoFloat {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(0.8) rotate(-4deg);
+    }
+    40% {
+        opacity: 1;
+        transform: translate(-50%, -30px) scale(1.15) rotate(4deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -60px) scale(1) rotate(0deg);
+    }
+}
+
+/* Partícula de Serragem Lego */
+.lego-particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    pointer-events: none;
+    z-index: 15;
+    animation: particleFly 0.7s forwards ease-out;
+}
+
+@keyframes particleFly {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) rotate(0deg) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(0.4);
+    }
+}
+
+/* ===================================================
+   MOSTRADORES MÉTRICOS: BLOCOS COLORIDOS DE LEGO
+   =================================================== */
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.metric-box {
+    border-radius: 10px;
+    padding: 16px 8px 12px;
+    text-align: center;
+    position: relative;
+    user-select: none;
+    transition: transform 0.15s ease;
+}
+
+.metric-box:hover {
+    transform: translateY(-3px);
+}
+
+/* Studs no topo de cada bloco métrico */
+.metric-box::before {
+    content: '';
+    position: absolute;
+    top: -7px;
+    left: 12px;
+    right: 12px;
+    height: 6px;
+    background: radial-gradient(circle at 50% 30%, rgba(255,255,255,0.7) 35%, rgba(0,0,0,0.3) 45%, transparent 48%) 0 0/18px 6px;
+    background-repeat: repeat-x;
+}
+
+.metric-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.metric-value {
+    font-size: 1.25rem;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+}
+
+/* Bloco Azul Lego (Tábuas x) */
+.metric-box.primary {
+    background: #0288d1;
+    background-image: linear-gradient(180deg, #29b6f6 0%, #0288d1 60%, #01579b 100%);
+    border: 2px solid #01579b;
+    box-shadow: 0 5px 0 #01417a, 0 8px 14px rgba(0,0,0,0.15);
+    color: #ffffff;
+}
+.metric-box.primary .metric-label { color: #e1f5fe; }
+.metric-box.primary .metric-value { color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+
+/* Bloco Amarelo Lego (Custo Fixo b) */
+.metric-box.fixed {
+    background: #fbc02d;
+    background-image: linear-gradient(180deg, #ffeb3b 0%, #fbc02d 60%, #f57f17 100%);
+    border: 2px solid #e65100;
+    box-shadow: 0 5px 0 #bf360c, 0 8px 14px rgba(0,0,0,0.15);
+    color: #3e2723;
+}
+.metric-box.fixed .metric-label { color: #5d4037; }
+.metric-box.fixed .metric-value { color: #bf360c; text-shadow: 0 1px 1px rgba(255,255,255,0.4); }
+
+/* Bloco Verde Lego (Custo Variável 15x) */
+.metric-box.variable {
+    background: #43a047;
+    background-image: linear-gradient(180deg, #66bb6a 0%, #43a047 60%, #2e7d32 100%);
+    border: 2px solid #1b5e20;
+    box-shadow: 0 5px 0 #1b5e20, 0 8px 14px rgba(0,0,0,0.15);
+    color: #ffffff;
+}
+.metric-box.variable .metric-label { color: #e8f5e9; }
+.metric-box.variable .metric-value { color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+
+/* Bloco Vermelho Lego (Custo Total C(x)) */
+.metric-box.total {
+    background: #e53935;
+    background-image: linear-gradient(180deg, #ef5350 0%, #e53935 60%, #b71c1c 100%);
+    border: 2px solid #7f0000;
+    box-shadow: 0 5px 0 #7f0000, 0 8px 14px rgba(0,0,0,0.18);
+    color: #ffffff;
+}
+.metric-box.total .metric-label { color: #ffebee; }
+.metric-box.total .metric-value { color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.5); font-size: 1.3rem; }
+
+/* ===================================================
+   BANNER DA EQUAÇÃO & GRÁFICO
+   =================================================== */
+
+/* Banner da Equação como Placa Preta de Lego */
+.equation-banner {
+    background: #212121;
+    background-image: 
+        radial-gradient(circle at 50% 35%, #424242 24%, #212121 30%, transparent 34%),
+        linear-gradient(180deg, #263238 0%, #1e272e 100%);
+    background-size: 20px 20px, 100% 100%;
+    border: 2px solid #37474f;
+    border-radius: 10px;
+    padding: 16px 20px;
+    color: #f8fafc;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 0 #0d1317, 0 8px 18px rgba(0,0,0,0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.equation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.82rem;
+    color: #b0bec5;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 800;
+}
+
+.equation-dynamic {
+    font-size: 1.2rem;
+    font-family: 'Inter', monospace, sans-serif;
+    color: #eceff1;
+    font-weight: 700;
+}
+
+.eq-highlight {
+    color: #ffeb3b;
+    font-weight: 900;
+    background: rgba(255, 235, 59, 0.15);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.eq-result {
+    color: #69f0ae;
+    font-weight: 900;
+    background: rgba(105, 240, 174, 0.15);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+/* Área do Gráfico Chart.js */
+.chart-wrapper {
+    position: relative;
+    width: 100%;
+    height: 280px;
+    background-color: #ffffff;
+    border: 2px solid #cfd8dc;
+    border-radius: 10px;
+    padding: 12px;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.04);
+}
+
+/* Caixa Didática */
+.didactic-box {
+    margin-top: 22px;
+    background-color: #fff9c4;
+    border: 2px solid #fbc02d;
+    border-left: 6px solid #f57f17;
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 0.9rem;
+    color: #4e342e;
+    line-height: 1.5;
+    box-shadow: 0 3px 0 #fbc02d;
+}
+
+.didactic-box strong {
+    color: #bf360c;
+}
+
+/* Responsividade do Componente de Corte */
+@media (max-width: 960px) {
+    .corte-grid {
+        grid-template-columns: 1fr;
+    }
+    .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .metrics-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+    .metric-value {
+        font-size: 1.1rem;
+    }
+    .sector-header h1 {
+        font-size: 1.8rem;
+    }
+}
+
+/* ===================================================
+   TELA DE EPIs (VESTIÁRIO DE SEGURANÇA) & PORTA LEGO
+   =================================================== */
+
+.epi-screen {
+    max-width: 900px;
+    margin: 0 auto 50px;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.epi-panel {
+    background-color: #ffffff;
+    border: 3px solid #e0e0e0;
+    border-radius: 18px;
+    padding: 36px 30px;
+    box-shadow: 0 8px 0 #cfd8dc, 0 16px 36px rgba(0, 0, 0, 0.09);
+    position: relative;
+}
+
+/* Studs decorativos no topo do painel EPI */
+.epi-panel::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 40px;
+    right: 40px;
+    height: 8px;
+    background: radial-gradient(circle, #fbc02d 40%, #e65100 45%, transparent 48%) 0 0/24px 8px,
+                radial-gradient(circle, #0288d1 40%, #01579b 45%, transparent 48%) 12px 0/24px 8px;
+    background-repeat: repeat-x;
+}
+
+.epi-selection-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin: 32px 0;
+}
+
+/* Card Individual de EPI */
+.epi-card {
+    background: #f8fafc;
+    border: 3px solid #cfd8dc;
+    border-radius: 14px;
+    padding: 24px 18px 20px;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 6px 0 #b0bec5, 0 10px 18px rgba(0, 0, 0, 0.06);
+    transition: all 0.2s ease;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.epi-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 0 #b0bec5, 0 14px 24px rgba(0, 0, 0, 0.12);
+    border-color: #90a4ae;
+}
+
+.epi-card:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #b0bec5, 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estado Equipado do Card */
+.epi-card.equipped {
+    background: #f0fdf4;
+    border-color: #22c55e;
+    box-shadow: 0 6px 0 #15803d, 0 10px 20px rgba(34, 197, 94, 0.18);
+}
+
+.epi-card.equipped:hover {
+    box-shadow: 0 8px 0 #15803d, 0 12px 24px rgba(34, 197, 94, 0.25);
+}
+
+.epi-card-badge {
+    position: absolute;
+    top: 12px;
+    left: 14px;
+    background: #eceff1;
+    color: #455a64;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid #b0bec5;
+}
+
+.epi-card.equipped .epi-card-badge {
+    background: #dcfce7;
+    color: #15803d;
+    border-color: #86efac;
+}
+
+/* Área da Ilustração SVG */
+.epi-icon-wrapper {
+    width: 140px;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 8px 0 14px;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.epi-card:hover .epi-icon-wrapper {
+    transform: scale(1.08);
+}
+
+.epi-card.equipped .epi-icon-wrapper {
+    transform: scale(1.1);
+}
+
+.epi-svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.12));
+}
+
+.epi-name {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 6px;
+}
+
+.epi-desc {
+    font-size: 0.85rem;
+    color: #64748b;
+    line-height: 1.4;
+    margin-bottom: 16px;
+    min-height: 38px;
+}
+
+/* Botão de Equipar */
+.btn-epi-equip {
+    width: 100%;
+    background-color: #0288d1;
+    background-image: linear-gradient(180deg, #29b6f6 0%, #0288d1 60%, #01579b 100%);
+    border: 2px solid #01579b;
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 800;
+    box-shadow: 0 4px 0 #01417a;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.epi-card.equipped .btn-epi-equip {
+    background-color: #22c55e;
+    background-image: linear-gradient(180deg, #4ade80 0%, #22c55e 60%, #16a34a 100%);
+    border-color: #15803d;
+    box-shadow: 0 4px 0 #166534;
+}
+
+/* ===================================================
+   PORTA DE ACESSO AO SETOR DE CORTE (ESTILO LEGO 3D)
+   =================================================== */
+
+.door-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+    padding-top: 24px;
+    border-top: 2px dashed #cfd8dc;
+}
+
+.door-status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #fee2e2;
+    color: #991b1b;
+    border: 2px solid #fca5a5;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 800;
+    margin-bottom: 24px;
+    box-shadow: 0 3px 0 #f87171;
+    transition: all 0.3s ease;
+}
+
+.door-status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #dc2626;
+    box-shadow: 0 0 8px #ef4444;
+}
+
+.door-status-indicator.unlocked {
+    background: #dcfce7;
+    color: #166534;
+    border-color: #86efac;
+    box-shadow: 0 3px 0 #4ade80;
+    animation: unlockedPulse 1.2s infinite ease-in-out;
+}
+
+.door-status-indicator.unlocked .door-status-dot {
+    background-color: #16a34a;
+    box-shadow: 0 0 10px #22c55e;
+}
+
+@keyframes unlockedPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
+/* Estrutura da Porta Lego */
+.lego-door-wrapper {
+    position: relative;
+    width: 270px;
+    perspective: 900px;
+    cursor: not-allowed;
+    opacity: 0.65;
+    transition: all 0.3s ease;
+}
+
+.lego-door-wrapper.unlocked {
+    cursor: pointer;
+    opacity: 1;
+}
+
+.lego-door-wrapper.unlocked:hover {
+    transform: scale(1.04);
+}
+
+/* Batente / Moldura de Bloco Azul Lego */
+.door-frame-lego {
+    background: #0288d1;
+    background-image: linear-gradient(180deg, #29b6f6 0%, #0288d1 50%, #01579b 100%);
+    border: 4px solid #01417a;
+    border-radius: 12px 12px 6px 6px;
+    padding: 10px 14px 10px;
+    box-shadow: 0 10px 0 #002f56, 0 18px 28px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+/* 4 Pinos (Studs) 3D no topo da porta Lego */
+.frame-top-studs {
+    display: flex;
+    justify-content: space-around;
+    position: absolute;
+    top: -14px;
+    left: 16px;
+    right: 16px;
+    height: 14px;
+}
+
+.lego-stud {
+    width: 28px;
+    height: 12px;
+    background: #29b6f6;
+    background-image: linear-gradient(180deg, #4fc3f7 0%, #0288d1 100%);
+    border: 2px solid #01417a;
+    border-radius: 4px 4px 1px 1px;
+    box-shadow: 0 2px 0 #002f56;
+}
+
+/* Faixa de perigo (Amarelo e Preto) no topo da porta */
+.hazard-strip {
+    height: 14px;
+    width: 100%;
+    background: repeating-linear-gradient(
+        -45deg,
+        #facc15,
+        #facc15 12px,
+        #1e293b 12px,
+        #1e293b 24px
+    );
+    border-radius: 4px;
+    margin: 4px 0 10px;
+    border: 2px solid #002f56;
+}
+
+.door-leaf-container {
+    display: flex;
+    height: 220px;
+    gap: 6px;
+    background: #013766;
+    border-radius: 6px;
+    padding: 6px;
+    overflow: hidden;
+    box-shadow: inset 0 4px 8px rgba(0,0,0,0.5);
+}
+
+/* Folhas da Porta Vermelha Clássica Lego */
+.door-leaf {
+    flex: 1;
+    background: #e53935;
+    background-image: linear-gradient(180deg, #ef5350 0%, #e53935 60%, #b71c1c 100%);
+    border: 3px solid #7f0000;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 8px 24px;
+    position: relative;
+    box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), 0 4px 8px rgba(0,0,0,0.3);
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: left center;
+}
+
+.door-leaf.right-leaf {
+    transform-origin: right center;
+}
+
+/* Abertura 3D das portas ao entrar */
+.lego-door-wrapper.opening .left-leaf {
+    transform: rotateY(-90deg);
+}
+
+.lego-door-wrapper.opening .right-leaf {
+    transform: rotateY(90deg);
+}
+
+/* Janela de 4 Vidros Clássica Lego */
+.door-window-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+    width: 60px;
+    height: 70px;
+    background: #b71c1c;
+    padding: 4px;
+    border-radius: 4px;
+    border: 2px solid #5f0000;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+}
+
+.window-pane {
+    background: #81d4fa;
+    background-image: linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(129,212,250,0.8) 60%, rgba(2,136,209,0.9) 100%);
+    border-radius: 2px;
+    border: 1px solid #0288d1;
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.8);
+}
+
+/* Maçaneta de Pino Redondo 1x1 Lego */
+.door-stud-knob {
+    width: 22px;
+    height: 22px;
+    background: #ffeb3b;
+    background-image: radial-gradient(circle at 40% 35%, #ffffff 15%, #ffeb3b 45%, #f57f17 100%);
+    border: 2px solid #d77200;
+    border-radius: 50%;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.4), inset 0 2px 2px rgba(255,255,255,0.8);
+    margin-top: 10px;
+}
+
+.door-sign {
+    margin-top: 10px;
+    background: #ffeb3b;
+    background-image: linear-gradient(180deg, #fff59d 0%, #ffeb3b 50%, #fbc02d 100%);
+    color: #b71c1c;
+    font-size: 0.74rem;
+    font-weight: 900;
+    text-align: center;
+    padding: 6px 4px;
+    border-radius: 4px;
+    border: 2px solid #d77200;
+    letter-spacing: 1px;
+    box-shadow: 0 2px 0 #b25900;
+}
+
+.door-help-text {
+    margin-top: 14px;
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: #475569;
+    text-align: center;
+}
+
+/* Transição para a Oficina */
+.workshop-screen {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.workshop-screen.hidden,
+.epi-screen.hidden {
+    display: none;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+/* ===================================================
+   COMPONENTE INTERATIVO: SETOR DE MONTAGEM (INEQUAÇÕES)
+   =================================================== */
+
+.montagem-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1.35fr;
+    gap: 28px;
+    align-items: start;
+}
+
+/* Painel de Controles e Decisão de Móveis */
+.furniture-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.furniture-card {
+    background: #f8fafc;
+    border: 2px solid #cfd8dc;
+    border-radius: 12px;
+    padding: 16px 12px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 4px 0 #b0bec5;
+    user-select: none;
+    transition: transform 0.15s ease, border-color 0.2s ease;
+}
+
+.furniture-card.mesas {
+    border-color: #90caf9;
+    background: linear-gradient(180deg, #ffffff 0%, #f0f7ff 100%);
+    box-shadow: 0 5px 0 #64b5f6;
+}
+
+.furniture-card.cadeiras {
+    border-color: #ffcc80;
+    background: linear-gradient(180deg, #ffffff 0%, #fff8e1 100%);
+    box-shadow: 0 5px 0 #ffa726;
+}
+
+.furniture-icon {
+    font-size: 2rem;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.furniture-title {
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #455a64;
+    margin-bottom: 6px;
+}
+
+.furniture-value-badge {
+    font-size: 1.8rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 12px;
+}
+
+.furniture-card.mesas .furniture-value-badge {
+    color: #0288d1;
+}
+
+.furniture-card.cadeiras .furniture-value-badge {
+    color: #e65100;
+}
+
+/* Stepper (+ / -) com estética de botão Lego */
+.furniture-stepper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-stepper {
+    width: 38px;
+    height: 36px;
+    border-radius: 8px;
+    border: 2px solid #37474f;
+    font-size: 1.25rem;
+    font-weight: 900;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+    user-select: none;
+}
+
+.btn-stepper.mesas-btn {
+    background: #0288d1;
+    background-image: linear-gradient(180deg, #29b6f6 0%, #0288d1 100%);
+    color: #ffffff;
+    border-color: #01579b;
+    box-shadow: 0 4px 0 #013f70;
+}
+
+.btn-stepper.cadeiras-btn {
+    background: #f57f17;
+    background-image: linear-gradient(180deg, #ffb74d 0%, #f57f17 100%);
+    color: #ffffff;
+    border-color: #bf360c;
+    box-shadow: 0 4px 0 #872506;
+}
+
+.btn-stepper:hover {
+    transform: translateY(-2px);
+}
+
+.btn-stepper:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.3);
+}
+
+/* Range Sliders de Precisão */
+.furniture-slider {
+    width: 100%;
+    margin-top: 10px;
+    accent-color: #0288d1;
+    cursor: pointer;
+}
+
+.furniture-card.cadeiras .furniture-slider {
+    accent-color: #f57f17;
+}
+
+/* Cards das Restrições Industriais */
+.constraints-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.constraint-card {
+    background: #ffffff;
+    border: 2px solid #cfd8dc;
+    border-radius: 12px;
+    padding: 14px 16px;
+    box-shadow: 0 4px 0 #b0bec5;
+    position: relative;
+    transition: all 0.25s ease;
+}
+
+.constraint-card.pass {
+    border-color: #81c784;
+    background: #f1f8e9;
+    box-shadow: 0 4px 0 #66bb6a;
+}
+
+.constraint-card.fail {
+    border-color: #e57373;
+    background: #ffebee;
+    box-shadow: 0 4px 0 #ef5350;
+}
+
+.constraint-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.constraint-title {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #263238;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.constraint-status-badge {
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.constraint-status-badge.pass {
+    background: #c8e6c9;
+    color: #1b5e20;
+    border: 1px solid #81c784;
+}
+
+.constraint-status-badge.fail {
+    background: #ffcdd2;
+    color: #b71c1c;
+    border: 1px solid #e57373;
+}
+
+.constraint-formula {
+    font-family: 'Inter', monospace, sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #37474f;
+    margin-bottom: 8px;
+}
+
+.constraint-formula .calc-highlight {
+    font-weight: 800;
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+
+.constraint-card.pass .calc-highlight {
+    background: #dcedc8;
+    color: #2e7d32;
+}
+
+.constraint-card.fail .calc-highlight {
+    background: #ffcdd2;
+    color: #c62828;
+}
+
+/* Barra de Progresso / Medidor Lego */
+.constraint-meter {
+    height: 10px;
+    background: #eceff1;
+    border-radius: 6px;
+    border: 1.5px solid #b0bec5;
+    overflow: hidden;
+    position: relative;
+}
+
+.constraint-meter-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.25s ease, background-color 0.25s ease;
+}
+
+.constraint-card.pass .constraint-meter-fill {
+    background: linear-gradient(90deg, #66bb6a, #43a047);
+}
+
+.constraint-card.fail .constraint-meter-fill {
+    background: linear-gradient(90deg, #ef5350, #d32f2f);
+}
+
+/* Banner de Decisão e Região Factível */
+.decision-feedback-banner {
+    background: #212121;
+    background-image: 
+        radial-gradient(circle at 50% 35%, #424242 24%, #212121 30%, transparent 34%),
+        linear-gradient(180deg, #263238 0%, #1e272e 100%);
+    background-size: 20px 20px, 100% 100%;
+    border: 2px solid #37474f;
+    border-radius: 12px;
+    padding: 16px 18px;
+    color: #eceff1;
+    box-shadow: 0 6px 0 #0d1317, 0 12px 24px rgba(0,0,0,0.25);
+    margin-bottom: 20px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.decision-feedback-banner.feasible {
+    background: #1b5e20;
+    background-image: 
+        radial-gradient(circle at 50% 35%, #388e3c 24%, #1b5e20 30%, transparent 34%),
+        linear-gradient(180deg, #2e7d32 0%, #1b5e20 100%);
+    border-color: #4caf50;
+    box-shadow: 0 6px 0 #0f3813, 0 0 24px rgba(76, 175, 80, 0.45);
+    animation: feasiblePulse 1.5s infinite alternate;
+}
+
+@keyframes feasiblePulse {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.015); box-shadow: 0 8px 0 #0f3813, 0 0 32px rgba(76, 175, 80, 0.65); }
+}
+
+.feedback-badge {
+    font-size: 0.8rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-bottom: 6px;
+}
+
+.decision-feedback-banner:not(.feasible) .feedback-badge {
+    background: #ffe082;
+    color: #bf360c;
+}
+
+.decision-feedback-banner.feasible .feedback-badge {
+    background: #ffeb3b;
+    color: #1b5e20;
+    box-shadow: 0 0 8px #ffeb3b;
+}
+
+.feedback-text {
+    font-size: 0.95rem;
+    line-height: 1.45;
+    font-weight: 600;
+}
+
+/* ===================================================
+   PLANO CARTESIANO INTERATIVO (CANVAS LEGO)
+   =================================================== */
+
+.cartesian-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+.cartesian-canvas-wrapper {
+    position: relative;
+    width: 100%;
+    background: #ffffff;
+    border: 3px solid #cfd8dc;
+    border-radius: 14px;
+    padding: 12px;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.06), 0 6px 0 #b0bec5;
+    overflow: hidden;
+    user-select: none;
+    touch-action: none;
+}
+
+.cartesian-canvas-wrapper canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    cursor: crosshair;
+    border-radius: 8px;
+}
+
+/* Legenda do Gráfico */
+.cartesian-legend {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 2px dashed #eceff1;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: #455a64;
+}
+
+.legend-color-box {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.legend-color-box.time-line {
+    background: #0288d1;
+    border: 1.5px solid #01579b;
+}
+
+.legend-color-box.freight-line {
+    background: #f57f17;
+    border: 1.5px solid #bf360c;
+}
+
+.legend-color-box.feasible-box {
+    background: rgba(46, 125, 50, 0.45);
+    border: 1.5px solid #2e7d32;
+}
+
+/* Instruções de Interação rápida */
+.graph-help-tip {
+    margin-top: 10px;
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: #607d8b;
+    text-align: center;
+    background: #f1f5f9;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid #cfd8dc;
+}
+
+/* Responsividade do Setor de Montagem */
+@media (max-width: 1000px) {
+    .montagem-grid {
+        grid-template-columns: 1fr;
+    }
+    .cartesian-legend {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .furniture-controls {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* Botão Voltar ao Vestiário */
+.btn-back-vestiary {
+    background: #f1f5f9;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    color: #475569;
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 6px 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 0 #94a3b8;
+    transition: all 0.15s ease;
+}
+
+.btn-back-vestiary:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 650px) {
+    .epi-selection-container {
+        grid-template-columns: 1fr;
+    }
+}

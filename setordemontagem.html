@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setor de Montagem - EMAC</title>
+    <!-- Importando a fonte Inter do Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Faixa superior de Lego -->
+    <div class="lego-topbar"></div>
+    
+    <!-- Menu Navbar -->
+    <header class="navbar">
+        <div class="nav-left">
+            <a href="https://www.ufpr.br" target="_blank" rel="noopener noreferrer" class="logo-ufpr-link" title="UFPR - Universidade Federal do Paraná">
+                <img src="./imgs/logo-ufpr.jpg" alt="Logo UFPR" class="logo-ufpr" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+                <div class="logo-ufpr-placeholder" style="display: none;">
+                    <span>UFPR</span>
+                </div>
+            </a>
+        </div>
+        <div class="nav-center">
+            <a href="index.html" style="text-decoration: none; color: inherit;">EMAC</a>
+        </div>
+        <div class="nav-right">
+            <a href="index.html#sobre">Sobre</a>
+            <a href="index.html#livro">Livro</a>
+        </div>
+    </header>
+
+    <!-- Container Principal do Setor de Montagem -->
+    <main class="container">
+        
+        <!-- Cabeçalho do Setor -->
+        <header class="sector-header">
+            <span class="sector-badge">Capítulo 2 • Inequações e Região Factível</span>
+            <h1>Setor de Montagem</h1>
+        </header>
+
+        <!-- Grid Principal em 2 Colunas: Painel de Decisão + Plano Cartesiano Interativo -->
+        <div class="montagem-grid">
+            
+            <!-- COLUNA 1: Painel de Decisão Industrial -->
+            <section class="panel-card interactive-panel">
+                <div class="panel-header">
+                    <h2>Decisão de Produção</h2>
+                    <div id="assemblyStatusPill" class="status-pill active">
+                        <span class="status-dot"></span>
+                        <span id="assemblyStatusText">PRODUÇÃO FACTÍVEL!</span>
+                    </div>
+                </div>
+
+                <!-- Controles dos Móveis (Mesas x e Cadeiras y) -->
+                <div class="furniture-controls">
+                    <!-- Card Mesas (x) -->
+                    <div class="furniture-card mesas">
+                        <div class="furniture-title">Mesas (Eixo X)</div>
+                        <div id="valMesas" class="furniture-value-badge">4</div>
+                        <div class="furniture-stepper">
+                            <button type="button" class="btn-stepper mesas-btn" id="btnMesasDec" title="Diminuir Mesas">−</button>
+                            <button type="button" class="btn-stepper mesas-btn" id="btnMesasInc" title="Aumentar Mesas">+</button>
+                        </div>
+                        <input type="range" id="sliderMesas" class="furniture-slider" min="0" max="30" value="4" step="1">
+                    </div>
+
+                    <!-- Card Cadeiras (y) -->
+                    <div class="furniture-card cadeiras">
+                        <div class="furniture-title">Cadeiras (Eixo Y)</div>
+                        <div id="valCadeiras" class="furniture-value-badge">8</div>
+                        <div class="furniture-stepper">
+                            <button type="button" class="btn-stepper cadeiras-btn" id="btnCadeirasDec" title="Diminuir Cadeiras">−</button>
+                            <button type="button" class="btn-stepper cadeiras-btn" id="btnCadeirasInc" title="Aumentar Cadeiras">+</button>
+                        </div>
+                        <input type="range" id="sliderCadeiras" class="furniture-slider" min="0" max="30" value="8" step="1">
+                    </div>
+                </div>
+
+                <!-- Painel de Restrição Industrial (Inequação Dinâmica de Tempo) -->
+                <div class="constraints-stack">
+                    
+                    <!-- Restrição: Tempo do Turno -->
+                    <div id="cardRestricaoTempo" class="constraint-card pass">
+                        <div class="constraint-header">
+                            <div class="constraint-title">
+                                <span>⏱️ Inequação do Tempo (<span id="lblTempoMax">Máx: 480 min / 8.0h</span>)</span>
+                            </div>
+                            <span id="badgeTempo" class="constraint-status-badge pass">Dentro do Turno</span>
+                        </div>
+                        <div class="constraint-formula">
+                            <span>40·(<span id="calcTempoX">4</span>) + 20·(<span id="calcTempoY">8</span>) = </span>
+                            <span id="calcTempoTotal" class="calc-highlight">320 min</span>
+                            <span id="lblTempoMaxDenom" style="color: #607d8b; font-size: 0.85rem;"> / 480 min</span>
+                        </div>
+                        <div class="constraint-meter">
+                            <div id="meterTempo" class="constraint-meter-fill" style="width: 66.6%;"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Banner Dinâmico de Feedback e Região Factível -->
+                <div id="feedbackBanner" class="decision-feedback-banner feasible">
+                    <div id="feedbackBadge" class="feedback-badge">✅ PRODUÇÃO DENTRO DO TURNO!</div>
+                    <div id="feedbackText" class="feedback-text">
+                        Com <strong>4 mesas</strong> e <strong>8 cadeiras</strong>, a fábrica gasta <strong>320 min ≤ 480 min</strong>. 
+                        Esta decisão está <strong>dentro da Região Factível</strong> e respeita a capacidade total do turno!
+                    </div>
+                </div>
+
+                <!-- Caixa Didática Teórica -->
+                <div class="didactic-box">
+                    <p><strong>Conceito Matemático da Inequação:</strong></p>
+                    <p id="didacticLine1">• <strong>Reta de Fronteira:</strong> A equação <code>40x + 20y = 480</code> liga os pontos (12, 0) e (0, 24). Ela divide o plano em dois lados.</p>
+                    <p>• <strong>Região Factível (≤ Turno):</strong> Todo o espaço pintado <em>abaixo</em> da reta representa produções que a fábrica consegue entregar dentro do turno.</p>
+                    <p>• <strong>Puxe a Reta no Gráfico:</strong> Ao clicar e arrastar a linha azul, você altera o <strong>Tempo Máximo do Turno</strong>, expandindo ou encolhendo a Região Factível!</p>
+                </div>
+            </section>
+
+            <!-- COLUNA 2: Plano Cartesiano Interativo (0 a 30) -->
+            <section class="panel-card cartesian-panel">
+                <div class="panel-header">
+                    <h2>📊 Plano Cartesiano de Produção</h2>
+                    <span style="font-size: 0.82rem; color: #546e7a; font-weight: 700;">Eixos: 0 a 30</span>
+                </div>
+
+                <!-- Wrapper do Canvas Interativo -->
+                <div id="cartesianWrapper" class="cartesian-canvas-wrapper">
+                    <canvas id="cartesianCanvas" width="600" height="520"></canvas>
+                </div>
+
+                <!-- Dica Rápida de Interação -->
+                <div class="graph-help-tip">
+                    🎯 <strong>Dica Interativa:</strong> Arraste o ponto <strong>(x, y)</strong> para testar a produção, ou <strong>clique e puxe a reta azul</strong> para mudar o tempo máximo do turno!
+                </div>
+
+                <!-- Legenda do Gráfico -->
+                <div class="cartesian-legend" style="grid-template-columns: 1fr 1fr;">
+                    <div class="legend-item">
+                        <span class="legend-color-box time-line"></span>
+                        <span id="legendTimeText">40x + 20y = 480</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color-box feasible-box"></span>
+                        <span>Região Factível (Dentro do Turno)</span>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Script Principal Unificado -->
+    <script src="main.js"></script>
+
+    <!-- Rodapé (Footer) -->
+    <footer class="footer">
+        <div class="footer-container">
+            <!-- Coluna 1: Sobre / EMAC -->
+            <div class="footer-col">
+                <h3 class="footer-title">EMAC</h3>
+                <p class="footer-text">
+                    Fábrica de Móveis - Uma jornada interativa de modelagem matemática e otimização de processos industriais.
+                </p>
+                <p class="footer-institution">
+                    Projeto acadêmico vinculado à <strong>UFPR</strong>.
+                </p>
+            </div>
+
+            <!-- Coluna 2: Navegação / Capítulos -->
+            <div class="footer-col">
+                <h3 class="footer-title">Capítulos</h3>
+                <ul class="footer-links">
+                    <li><a href="setordecorte.html">Capítulo 1: Setor de Corte</a></li>
+                    <li><a href="setordemontagem.html">Capítulo 2: Setor de Montagem</a></li>
+                    <li><a href="setordelogistica.html">Capítulo 3: Setor de Logística</a></li>
+                    <li><a href="setordevendas.html">Capítulos 4 e 5: Setor de Vendas</a></li>
+                </ul>
+            </div>
+
+            <!-- Coluna 3: Links Úteis / Recursos -->
+            <div class="footer-col">
+                <h3 class="footer-title">Recursos</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html#livro">Livro Didático</a></li>
+                    <li><a href="https://www.ufpr.br" target="_blank" rel="noopener noreferrer">Portal UFPR</a></li>
+                    <li><a href="index.html#materiais">Materiais de Apoio</a></li>
+                    <li><a href="index.html#sobre">Sobre o Projeto</a></li>
+                </ul>
+            </div>
+
+            <!-- Coluna 4: Contato e Informações -->
+            <div class="footer-col">
+                <h3 class="footer-title">Informações</h3>
+                <ul class="footer-info">
+                    <li><strong>Instituição:</strong> Universidade Federal do Paraná</li>
+                    <li><strong>Curso:</strong> Matemática Industrial / Exatas</li>
+                    <li><strong>Email:</strong> contato@ufpr.br</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 EMAC - UFPR. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
+
