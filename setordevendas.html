@@ -32,10 +32,322 @@
         </div>
     </header>
 
-    <!-- Container Principal do Setor de Vendas -->
+    <!-- Container Principal: Setor de Vendas-->
     <main class="container">
-        <!-- Conteúdo do Setor de Vendas aqui -->
+        
+        <!-- Cabeçalho do Setor -->
+        <header class="sector-header">
+            <span class="sector-badge">Capítulos 4 e 5 • Função Objetivo e Otimização de Lucro</span>
+            <h1>Setor de Vendas</h1>
+        </header>
+
+        <!-- Grid Principal em 2 Colunas -->
+        <div class="vendas-grid">
+            
+            <!-- COLUNA 1: Painel de Controle do Jogo -->
+            <section class="panel-card interactive-panel">
+                <div class="panel-header">
+                    <h2>📈 Painel de Mercado</h2>
+                    <div id="gameStatusPill" class="status-pill">
+                        <span class="status-dot"></span>
+                        <span id="gameStatusText">AGUARDANDO</span>
+                    </div>
+                </div>
+
+                <!-- Card de Preços do Mercado (gerados por rodada) -->
+                <div class="market-prices-container">
+                    <div class="market-price-card market-mesa">
+                        <div class="market-price-label">🪑 Preço Mesa (a)</div>
+                        <div id="marketPriceA" class="market-price-value">R$ —</div>
+                    </div>
+                    <div class="market-price-card market-cadeira">
+                        <div class="market-price-label">🪑 Preço Cadeira (b)</div>
+                        <div id="marketPriceB" class="market-price-value">R$ —</div>
+                    </div>
+                </div>
+
+                <!-- Evento de Mercado e Condições da Rodada -->
+                <div id="marketEventBanner" class="market-event-banner normal-market">
+                    <div class="market-event-header">
+                        <span id="marketEventIcon" class="market-event-icon">☀️</span>
+                        <span id="marketEventTitle" class="market-event-title">Mercado Estável</span>
+                    </div>
+                    <div id="marketEventDesc" class="market-event-desc">Condições normais de operação na fábrica.</div>
+                </div>
+
+                <!-- Indicadores de Custos e Meta de Eficiência -->
+                <div class="round-finance-strip">
+                    <div class="finance-item">
+                        <span class="finance-label">🏢 Custo Fixo</span>
+                        <strong id="roundOpCostDisplay" class="finance-value cost-value">-R$ 0</strong>
+                    </div>
+                    <div class="finance-item">
+                        <span class="finance-label">🎯 Meta Mínima</span>
+                        <strong id="roundMinEffDisplay" class="finance-value eff-value">≥ 0%</strong>
+                    </div>
+                    <div class="finance-item">
+                        <span class="finance-label">📐 Tolerância</span>
+                        <strong id="roundToleranceDisplay" class="finance-value tol-value">±8%</strong>
+                    </div>
+                </div>
+
+                <!-- Fórmula da Função Objetivo -->
+                <div class="objective-formula-banner">
+                    <div class="formula-header">
+                        <span>Função Objetivo</span>
+                        <span id="formulaZLabel" class="formula-z-badge">Z = ax + by</span>
+                    </div>
+                    <div class="formula-dynamic">
+                        Lucro Atual: <span id="formulaZDisplay" class="formula-z-display">Z = ?</span>
+                    </div>
+                </div>
+
+                <!-- Aviso de Tolerância Zero / Lucro Perfeito (Rodada 12+) -->
+                <div id="zeroToleranceBanner" class="zero-tolerance-banner" style="display: none;">
+                    <div class="zt-banner-header">
+                        <span class="zt-banner-icon">☠️</span>
+                        <strong class="zt-banner-title">AVISO: LUCRO PERFEITO OBRIGATÓRIO!</strong>
+                    </div>
+                    <div class="zt-banner-desc">
+                        A partir desta rodada, tolerância zero ativada: encontre <strong>exatamente o vértice ótimo</strong> ($Z^*$). Qualquer desvio perde 1 vida!
+                    </div>
+                </div>
+
+                <!-- Slider Varrer Lucro -->
+                <div class="slider-lucro-wrapper">
+                    <div class="slider-lucro-header">
+                        <span>🎚️ Varrer Lucro (Z)</span>
+                        <strong id="sliderZValue" class="slider-z-readout">Z = 0</strong>
+                    </div>
+                    <input type="range" id="sliderVarrerLucro" class="slider-lucro" min="0" max="10000" value="0" step="1">
+                    <div class="slider-lucro-hints">
+                        <span>Z = 0</span>
+                        <span id="sliderMaxLabel">Z = máx</span>
+                    </div>
+                </div>
+
+                <!-- Botão de Ação Principal -->
+                <div class="validate-action-container">
+                    <button id="btnValidarProducao" class="btn-validar-producao" type="button" disabled>
+                        <span id="btnValidarIcon">🔒</span>
+                        <span id="btnValidarText">Validar Produção</span>
+                    </button>
+                    <button id="btnIniciarJogo" class="btn-iniciar-jogo" type="button">
+                        <span>🏭</span>
+                        <span>Iniciar Jogo</span>
+                    </button>
+                </div>
+
+                <!-- Restrições Ativas -->
+                <div id="constraintsDisplay" class="constraints-display">
+                    <div class="constraints-display-header">
+                        <h3>📋 Restrições Ativas</h3>
+                    </div>
+                    <div id="constraintsList" class="constraints-list">
+                        <div class="constraint-chip red-chip">🔴 2x + y ≤ 100</div>
+                        <div class="constraint-chip blue-chip">🔵 x + 2y ≤ 80</div>
+                        <div class="constraint-chip gray-chip">x ≥ 0, y ≥ 0</div>
+                    </div>
+                </div>
+
+                <!-- Caixa Didática -->
+                <div class="didactic-box">
+                    <p><strong>Conceito: Método Gráfico de Otimização</strong></p>
+                    <p>• <strong>Bússola (Vetor Gradiente):</strong> A flecha roxa aponta na direção de crescimento máximo do lucro.</p>
+                    <p>• <strong>Reta de Lucro:</strong> Desliza perpendicularmente à bússola. O último ponto da Região Factível tocado pela reta é o <strong>vértice ótimo</strong>!</p>
+                    <p>• <strong>Dificuldade Gradativa:</strong> O tempo diminui, o mercado impõe novas restrições e os acionistas exigem alta eficiência!</p>
+                    <p>• <strong>Custos Fixos:</strong> Cada rodada tem aluguel operacional. Produzir abaixo do ótimo pode causar prejuízo e falência.</p>
+                </div>
+            </section>
+
+            <!-- COLUNA 2: Plano Cartesiano Interativo -->
+            <section class="panel-card cartesian-panel">
+                <div class="panel-header">
+                    <h2>📊 Plano Cartesiano</h2>
+                    <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                        <span id="compassStatusBadge" class="compass-status-badge" style="display: none;"></span>
+                        <span id="axisRangeLabel" style="font-size: 0.82rem; color: #546e7a; font-weight: 700;">Eixos: auto</span>
+                    </div>
+                </div>
+
+                <!-- Wrapper do Canvas -->
+                <div id="cartesianWrapperVendas" class="cartesian-canvas-wrapper">
+                    <canvas id="vendasCanvas" width="600" height="520"></canvas>
+                </div>
+
+                <!-- HUD (Status do Jogo: Vidas, Tempo, Rodada, Caixa) -->
+                <div id="gameHud" class="game-hud">
+                    <!-- Caixa Acumulado -->
+                    <div class="hud-stat hud-cash">
+                        <div class="hud-stat-label">💰 Caixa</div>
+                        <div id="hudCashValue" class="hud-stat-value cash-value">R$ 0</div>
+                    </div>
+                    <!-- Vidas -->
+                    <div class="hud-stat hud-lives">
+                        <div class="hud-stat-label">❤️ Vidas</div>
+                        <div id="hudHearts" class="hud-hearts">
+                            <span class="heart-icon" data-index="0">♥</span>
+                            <span class="heart-icon" data-index="1">♥</span>
+                            <span class="heart-icon" data-index="2">♥</span>
+                        </div>
+                    </div>
+                    <!-- Timer -->
+                    <div class="hud-stat hud-timer">
+                        <div class="hud-stat-label">⏱️ Tempo</div>
+                        <div id="hudTimerValue" class="hud-stat-value timer-value">20s</div>
+                        <div class="timer-bar-track">
+                            <div id="hudTimerBar" class="timer-bar-fill" style="width: 100%;"></div>
+                        </div>
+                    </div>
+                    <!-- Rodada -->
+                    <div class="hud-stat hud-round">
+                        <div class="hud-stat-label">🏭 Rodada</div>
+                        <div id="hudRoundValue" class="hud-stat-value round-value">#0</div>
+                    </div>
+                </div>
+
+                <!-- Dica Interativa -->
+                <div id="graphHelpTip" class="graph-help-tip">
+                    🎯 <strong>Dica:</strong> Deslize o slider <strong>"Varrer Lucro (Z)"</strong>
+                </div>
+
+                <!-- Legenda Dinâmica -->
+                <div id="canvasLegend" class="cartesian-legend">
+                    <div class="legend-item">
+                        <span class="legend-color-box" style="background: rgba(239, 83, 80, 0.4); border: 1.5px solid #c62828;"></span>
+                        <span id="legendRed">2x + y ≤ 100 (Blocos Vermelhos)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color-box" style="background: rgba(66, 165, 245, 0.4); border: 1.5px solid #1565c0;"></span>
+                        <span id="legendBlue">x + 2y ≤ 80 (Blocos Azuis)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color-box" style="background: rgba(255, 235, 59, 0.5); border: 1.5px solid #f9a825;"></span>
+                        <span>Região Factível</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color-box" style="background: #7e57c2; border: 1.5px solid #4527a0;"></span>
+                        <span>Bússola / Reta de Lucro</span>
+                    </div>
+                </div>
+            </section>
+
+        </div>
     </main>
+
+    <!-- Modal: Loja da Fábrica (Upgrades Roguelike) -->
+    <div id="shopModal" class="shop-modal-backdrop">
+        <div class="shop-modal">
+            <div class="shop-modal-header">
+                <div class="shop-icon">🛒</div>
+                <h3 class="shop-title">Loja da Fábrica</h3>
+                <p class="shop-subtitle">Escolha 1 upgrade para expandir sua fábrica! Seu caixa: <strong id="shopCashDisplay">R$ 0</strong> <span id="shopInflationBadge" class="shop-inflation-badge"></span></p>
+            </div>
+            <div id="upgradeCardsGrid" class="upgrade-cards-grid">
+                <!-- Cards gerados dinamicamente pelo JS -->
+            </div>
+            <div class="shop-actions">
+                <button id="btnComprarUpgrade" class="btn-comprar-upgrade" type="button" disabled>
+                    <span>🛒</span> Comprar Upgrade Selecionado
+                </button>
+                <button id="btnPularLoja" class="btn-pular-loja" type="button">
+                    Pular (Sem Compra) →
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Game Over -->
+    <div id="gameOverModal" class="gameover-modal-backdrop">
+        <div class="gameover-modal">
+            <div class="gameover-icon">💀</div>
+            <h3 class="gameover-title">Game Over!</h3>
+            <div class="gameover-stats">
+                <div class="gameover-stat-item">
+                    <span>Rodadas Sobrevividas</span>
+                    <strong id="goStatRounds">0</strong>
+                </div>
+                <div class="gameover-stat-item">
+                    <span>Caixa Final</span>
+                    <strong id="goStatCash">R$ 0</strong>
+                </div>
+                <div class="gameover-stat-item">
+                    <span>Acertos Críticos</span>
+                    <strong id="goStatPerfect">0</strong>
+                </div>
+                <div class="gameover-stat-item">
+                    <span>Melhor Lucro (Rodada)</span>
+                    <strong id="goStatBestRound">R$ 0</strong>
+                </div>
+            </div>
+            <button id="btnJogarNovamente" class="btn-jogar-novamente" type="button">
+                🏭 Jogar Novamente
+            </button>
+            <a href="index.html" class="btn-voltar-home">← Voltar ao Início</a>
+        </div>
+    </div>
+
+    <!-- Modal: Acerto Crítico (Celebração) -->
+    <div id="perfectModal" class="perfect-modal-backdrop">
+        <div class="perfect-modal">
+            <div class="perfect-icon">🏆</div>
+            <h3 class="perfect-title">Decisão Perfeita!</h3>
+            <p class="perfect-subtitle">Você encontrou o <strong>vértice ótimo</strong> — lucro máximo absoluto!</p>
+            <div class="perfect-bonus">
+                <span>Bônus de Precisão:</span>
+                <strong id="perfectBonusValue">+R$ 0</strong>
+            </div>
+            <div id="perfectFinanceBreakdown" class="modal-finance-breakdown"></div>
+            <div id="coinRain" class="coin-rain-container"></div>
+        </div>
+    </div>
+
+    <!-- Modal: Falha / Advertência de Produção -->
+    <div id="rejectModal" class="reject-modal-backdrop">
+        <div class="reject-modal">
+            <div id="rejectIcon" class="reject-icon">⚠️</div>
+            <h3 id="rejectTitle" class="reject-title">Produção Reprovada!</h3>
+            <p id="rejectReason" class="reject-subtitle">Sua decisão não atendeu aos critérios dos acionistas.</p>
+            <div id="rejectPenalty" class="reject-penalty">-1 Vida ❤️</div>
+        </div>
+    </div>
+
+    <!-- Modal: Alerta de Lucro Perfeito (Tolerância Zero - Rodada 12+) -->
+    <div id="zeroToleranceModal" class="zero-tolerance-modal-backdrop">
+        <div class="zero-tolerance-modal">
+            <div class="zt-modal-skull">☠️</div>
+            <h2 class="zt-modal-title">ALERTA CRÍTICO: LUCRO PERFEITO!</h2>
+            <div class="zt-modal-badge">TOLERÂNCIA ZERO ATIVADA • RODADA 12+</div>
+            <p class="zt-modal-lead">A fábrica entrou em regime de auditoria extrema. A partir de agora:</p>
+            <div class="zt-rules-grid">
+                <div class="zt-rule-card">
+                    <span class="zt-rule-icon">🎯</span>
+                    <div class="zt-rule-info">
+                        <strong>Vértice Ótimo Exato</strong>
+                        <span>Você deve posicionar a reta de lucro <strong>literalmente no vértice ótimo</strong> ($Z^*$).</span>
+                    </div>
+                </div>
+                <div class="zt-rule-card">
+                    <span class="zt-rule-icon">🚫</span>
+                    <div class="zt-rule-info">
+                        <strong>Margem de Erro Zero</strong>
+                        <span>Acabaram as aproximações: qualquer desvio causará <strong>perda imediata de 1 vida ❤️</strong>!</span>
+                    </div>
+                </div>
+                <div class="zt-rule-card">
+                    <span class="zt-rule-icon">⏱️</span>
+                    <div class="zt-rule-info">
+                        <strong>Velocidade Máxima</strong>
+                        <span>O tempo por rodada está ultracurto. Seja rápido e preciso no slider!</span>
+                    </div>
+                </div>
+            </div>
+            <button id="btnFecharZeroTolerance" class="btn-zero-tolerance-start" type="button">
+                <span>⚡</span>
+                <span>Entendido! Iniciar Rodada 12</span>
+            </button>
+        </div>
+    </div>
 
     <!-- Rodapé (Footer) -->
     <footer class="footer">
@@ -94,4 +406,3 @@
 
 </body>
 </html>
-

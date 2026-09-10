@@ -34,8 +34,287 @@
 
     <!-- Container Principal do Setor de Logística -->
     <main class="container">
-        <!-- Conteúdo do Setor de Logística aqui -->
+        
+        <!-- Cabeçalho do Setor -->
+        <header class="sector-header">
+            <span class="sector-badge">Capítulo 3 • Sistema de Inequações</span>
+            <h1>Setor de Logística</h1>
+        </header>
+
+        <!-- Grid Principal em 2 Colunas: Painel de Decisão + Plano Cartesiano Interativo -->
+        <div class="logistica-grid">
+            
+            <!-- COLUNA 1: Painel de Decisão Industrial -->
+            <section class="panel-card interactive-panel">
+                <div class="panel-header">
+                    <h2>Decisão de Carregamento</h2>
+                    <div id="logisticsStatusPill" class="status-pill">
+                        <span class="status-dot"></span>
+                        <span id="logisticsStatusText">CARGA BLOQUEADA</span>
+                    </div>
+                </div>
+
+                <!-- Controles dos Móveis (Mesas x e Cadeiras y) -->
+                <div class="furniture-controls">
+                    <!-- Card Mesas (x) -->
+                    <div class="furniture-card mesas">
+                        <div class="furniture-title">Mesas (Eixo X)</div>
+                        <div id="valMesasLog" class="furniture-value-badge">10</div>
+                        <div class="furniture-stepper">
+                            <button type="button" class="btn-stepper mesas-btn" id="btnMesasDecLog" title="Diminuir Mesas">−</button>
+                            <button type="button" class="btn-stepper mesas-btn" id="btnMesasIncLog" title="Aumentar Mesas">+</button>
+                        </div>
+                        <input type="range" id="sliderMesasLog" class="furniture-slider" min="0" max="80" value="10" step="1">
+                        <div style="font-size: 0.74rem; color: #607d8b; font-weight: 700; margin-top: 6px;">5 kg/un • 1 espaço</div>
+                    </div>
+
+                    <!-- Card Cadeiras (y) -->
+                    <div class="furniture-card cadeiras">
+                        <div class="furniture-title">Cadeiras (Eixo Y)</div>
+                        <div id="valCadeirasLog" class="furniture-value-badge">10</div>
+                        <div class="furniture-stepper">
+                            <button type="button" class="btn-stepper cadeiras-btn" id="btnCadeirasDecLog" title="Diminuir Cadeiras">−</button>
+                            <button type="button" class="btn-stepper cadeiras-btn" id="btnCadeirasIncLog" title="Aumentar Cadeiras">+</button>
+                        </div>
+                        <input type="range" id="sliderCadeirasLog" class="furniture-slider" min="0" max="80" value="10" step="1">
+                        <div style="font-size: 0.74rem; color: #607d8b; font-weight: 700; margin-top: 6px;">2 kg/un • 1 espaço</div>
+                    </div>
+                </div>
+
+                <!-- Painel de Restrições Logísticas (3 Inequações Simultâneas) -->
+                <div class="constraints-stack">
+                    
+                    <!-- 1. Regra Financeira: Peso Mínimo (5x + 2y >= Lmin) -->
+                    <div id="cardMinWeight" class="constraint-card card-min-weight fail">
+                        <div class="constraint-header">
+                            <div class="constraint-title">
+                                <span>💰 Regra Financeira: Peso Mínimo</span>
+                            </div>
+                            <span id="badgeMinWeight" class="constraint-status-badge fail">Abaixo do Mínimo</span>
+                        </div>
+                        <div class="constraint-formula">
+                            <span>5·(<span id="calcMinWeightX">10</span>) + 2·(<span id="calcMinWeightY">10</span>) = </span>
+                            <span id="calcMinWeightTotal" class="calc-highlight">70 kg</span>
+                            <span style="color: #607d8b; font-size: 0.85rem;"> ≥ <span id="lblMinWeightTarget">100</span> kg</span>
+                        </div>
+                        <!-- Controlador Interativo do Limite Mínimo -->
+                        <div class="constraint-limit-control">
+                            <div class="limit-control-label">
+                                <span>Ajustar Piso Mínimo:</span>
+                                <strong id="valMinWeightLimit">100 kg</strong>
+                            </div>
+                            <div class="limit-slider-row">
+                                <button type="button" class="btn-limit-step" id="btnMinWeightDec" title="Diminuir Piso">−</button>
+                                <input type="range" id="sliderMinWeightLimit" class="limit-slider" min="30" max="180" step="5" value="100">
+                                <button type="button" class="btn-limit-step" id="btnMinWeightInc" title="Aumentar Piso">+</button>
+                            </div>
+                        </div>
+                        <div class="constraint-meter">
+                            <div id="meterMinWeight" class="constraint-meter-fill" style="width: 70%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Regra da Polícia: Peso Máximo (5x + 2y <= Lmax) -->
+                    <div id="cardMaxWeight" class="constraint-card card-max-weight pass">
+                        <div class="constraint-header">
+                            <div class="constraint-title">
+                                <span>🚔 Regra da Polícia: Peso Máximo</span>
+                            </div>
+                            <span id="badgeMaxWeight" class="constraint-status-badge pass">Peso Permitido</span>
+                        </div>
+                        <div class="constraint-formula">
+                            <span>5·(<span id="calcMaxWeightX">10</span>) + 2·(<span id="calcMaxWeightY">10</span>) = </span>
+                            <span id="calcMaxWeightTotal" class="calc-highlight">70 kg</span>
+                            <span style="color: #607d8b; font-size: 0.85rem;"> ≤ <span id="lblMaxWeightTarget">250</span> kg</span>
+                        </div>
+                        <!-- Controlador Interativo do Limite Máximo -->
+                        <div class="constraint-limit-control">
+                            <div class="limit-control-label">
+                                <span>Ajustar Teto Policial:</span>
+                                <strong id="valMaxWeightLimit">250 kg</strong>
+                            </div>
+                            <div class="limit-slider-row">
+                                <button type="button" class="btn-limit-step" id="btnMaxWeightDec" title="Diminuir Teto">−</button>
+                                <input type="range" id="sliderMaxWeightLimit" class="limit-slider" min="120" max="380" step="10" value="250">
+                                <button type="button" class="btn-limit-step" id="btnMaxWeightInc" title="Aumentar Teto">+</button>
+                            </div>
+                        </div>
+                        <div class="constraint-meter">
+                            <div id="meterMaxWeight" class="constraint-meter-fill" style="width: 28%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Regra do Baú: Capacidade do Baú (x + y <= Cbau) -->
+                    <div id="cardMaxSpace" class="constraint-card card-max-space pass">
+                        <div class="constraint-header">
+                            <div class="constraint-title">
+                                <span>📦 Regra do Baú: Capacidade do Baú</span>
+                            </div>
+                            <span id="badgeMaxSpace" class="constraint-status-badge pass">Cabe no Baú</span>
+                        </div>
+                        <div class="constraint-formula">
+                            <span>(<span id="calcSpaceX">10</span>) + (<span id="calcSpaceY">10</span>) = </span>
+                            <span id="calcSpaceTotal" class="calc-highlight">20 móveis</span>
+                            <span style="color: #607d8b; font-size: 0.85rem;"> ≤ <span id="lblMaxSpaceTarget">60</span> móveis</span>
+                        </div>
+                        <!-- Controlador Interativo da Capacidade do Baú -->
+                        <div class="constraint-limit-control">
+                            <div class="limit-control-label">
+                                <span>Ajustar Capacidade do Baú:</span>
+                                <strong id="valMaxSpaceLimit">60 móveis</strong>
+                            </div>
+                            <div class="limit-slider-row">
+                                <button type="button" class="btn-limit-step" id="btnMaxSpaceDec" title="Diminuir Capacidade">−</button>
+                                <input type="range" id="sliderMaxSpaceLimit" class="limit-slider" min="20" max="80" step="5" value="60">
+                                <button type="button" class="btn-limit-step" id="btnMaxSpaceInc" title="Aumentar Capacidade">+</button>
+                            </div>
+                        </div>
+                        <div class="constraint-meter">
+                            <div id="meterMaxSpace" class="constraint-meter-fill" style="width: 33.3%;"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Botão de Ação: Despachar Caminhão -->
+                <div class="dispatch-action-container">
+                    <button id="btnDespachar" class="btn-despachar-caminhao" type="button" disabled>
+                        <span id="btnDespacharIcon">🔒</span>
+                        <span id="btnDespacharText">Despachar Caminhão</span>
+                    </button>
+                    <div id="dispatchStatusNote" class="dispatch-status-note">
+                        ⚠️ Para liberar o despacho, a carga deve cumprir as 3 regras simultaneamente (Região Factível).
+                    </div>
+                </div>
+
+                <!-- Banner Dinâmico de Feedback e Região Factível -->
+                <div id="feedbackBannerLog" class="decision-feedback-banner">
+                    <div id="feedbackBadgeLog" class="feedback-badge">⚠️ CARGA NÃO FACTÍVEL</div>
+                    <div id="feedbackTextLog" class="feedback-text">
+                        Ajuste a quantidade de mesas e cadeiras para atingir o peso mínimo, sem ultrapassar os limites de peso e espaço do baú.
+                    </div>
+                </div>
+
+                <!-- Caixa Didática Teórica -->
+                <div class="didactic-box">
+                    <p><strong>Conceito Matemático do Sistema de Inequações:</strong></p>
+                    <p id="didacticLogLine1">• <strong>Interseção de Semiplanos:</strong> Cada regra física ou legal delimita uma reta de fronteira no plano cartesiano. O conjunto que satisfaz as três desigualdades ao mesmo tempo com não-negatividade (x >= 0, y >=0) forma a <strong>Região Factível</strong>.</p>
+                    <p>• <strong>Geometria da Região Factível:</strong> A área onde as camadas coloridas se sobrepõem forma um polígono convexo de soluções viáveis. Qualquer ponto dentro desse polígono é um plano de carga seguro e lucrativo.</p>
+                </div>
+            </section>
+
+            <!-- COLUNA 2: Plano Cartesiano Interativo (0 a 80) e Toggles de Camadas -->
+            <section class="panel-card cartesian-panel">
+                <div class="panel-header">
+                    <h2>📊 Plano Cartesiano de Logística</h2>
+                    <span style="font-size: 0.82rem; color: #546e7a; font-weight: 700;">Eixos: 0 a 80</span>
+                </div>
+
+                <!-- Interruptores / Toggles de Camadas Translúcidas -->
+                <div class="layer-toggles-wrapper">
+                    <div class="layer-toggles-header">
+                        <h3>🎛️ Camadas de Inequações (Sobreposição)</h3>
+                        <span style="font-size: 0.74rem; color: #64748b; font-weight: 700;">Ative para sobrepor</span>
+                    </div>
+                    <div class="layer-toggles-grid">
+                        <!-- Camada 1: Verde (Peso Mínimo >= Lmin) -->
+                        <label class="layer-toggle-item layer-green active" id="labelToggleMinWeight">
+                            <input type="checkbox" id="toggleMinWeight" class="layer-checkbox" checked>
+                            <span class="layer-badge-dot green"></span>
+                            <div class="layer-label-text">
+                                <span>Área Verde: Peso Mínimo</span>
+                                <span class="layer-formula-tag" id="tagMinWeightFormula">5x + 2y ≥ 100 kg (Regra Financeira)</span>
+                            </div>
+                        </label>
+
+                        <!-- Camada 2: Vermelha (Peso Máximo <= Lmax) -->
+                        <label class="layer-toggle-item layer-red active" id="labelToggleMaxWeight">
+                            <input type="checkbox" id="toggleMaxWeight" class="layer-checkbox" checked>
+                            <span class="layer-badge-dot red"></span>
+                            <div class="layer-label-text">
+                                <span>Área Vermelha: Peso Máximo</span>
+                                <span class="layer-formula-tag" id="tagMaxWeightFormula">5x + 2y ≤ 250 kg (Regra da Polícia)</span>
+                            </div>
+                        </label>
+
+                        <!-- Camada 3: Amarela (Capacidade <= Cbau) -->
+                        <label class="layer-toggle-item layer-yellow active" id="labelToggleSpace">
+                            <input type="checkbox" id="toggleSpace" class="layer-checkbox" checked>
+                            <span class="layer-badge-dot yellow"></span>
+                            <div class="layer-label-text">
+                                <span>Área Amarela: Espaço no Baú</span>
+                                <span class="layer-formula-tag" id="tagSpaceFormula">x + y ≤ 60 móveis (Regra do Baú)</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Wrapper do Canvas Interativo -->
+                <div id="cartesianWrapperLog" class="cartesian-canvas-wrapper">
+                    <canvas id="logisticaCanvas" width="600" height="520"></canvas>
+                </div>
+
+                <!-- Dica Rápida de Interação -->
+                <div class="graph-help-tip">
+                    🎯 <strong>Dica Interativa:</strong> Arraste o marcador <strong>(x, y)</strong> diretamente no gráfico ou use os controles deslizantes para posicionar a carga na <strong>Região Factível</strong>!
+                </div>
+
+                <!-- Legenda do Gráfico -->
+                <div class="cartesian-legend">
+                    <div class="legend-item">
+                        <span class="legend-color-box" style="background: rgba(46, 125, 50, 0.4); border: 1.5px solid #2e7d32;"></span>
+                        <span id="legendMinWeightText">5x + 2y ≥ 100 (Mín. 100kg)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color-box" style="background: rgba(239, 83, 80, 0.4); border: 1.5px solid #c62828;"></span>
+                        <span id="legendMaxWeightText">5x + 2y ≤ 250 (Máx. 250kg)</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color-box" style="background: rgba(234, 179, 8, 0.45); border: 1.5px solid #ca8a04;"></span>
+                        <span id="legendSpaceText">x + y ≤ 60 (Máx. 60 un)</span>
+                    </div>
+                </div>
+            </section>
+
+        </div>
     </main>
+
+    <!-- Modal de Sucesso ao Despachar Caminhão -->
+    <div id="dispatchModal" class="dispatch-modal-backdrop">
+        <div class="dispatch-modal">
+            <div class="modal-truck-icon">🚚📦</div>
+            <h3 class="modal-title">Caminhão Despachado com Sucesso!</h3>
+            <p style="color: #475569; font-weight: 600; font-size: 0.95rem; line-height: 1.4;">
+                Carga despachada com sucesso! As restrições e o caminhão foram reiniciados para o padrão original para a próxima entrega.
+            </p>
+
+            <div class="modal-manifest">
+                <h4>Manifesto de Carga Aprovado</h4>
+                <div class="manifest-item">
+                    <span>Mesas (x):</span>
+                    <strong id="modalMesas">0 un (0 kg)</strong>
+                </div>
+                <div class="manifest-item">
+                    <span>Cadeiras (y):</span>
+                    <strong id="modalCadeiras">0 un (0 kg)</strong>
+                </div>
+                <div class="manifest-item">
+                    <span>Peso Total da Carga:</span>
+                    <strong id="modalPeso">0 kg</strong>
+                </div>
+                <div class="manifest-item">
+                    <span>Ocupação do Baú:</span>
+                    <strong id="modalEspaco">0 / 60 móveis</strong>
+                </div>
+                <div class="manifest-item">
+                    <span>Status da Operação:</span>
+                    <span>✅ 100% REGULAR E FACTÍVEL</span>
+                </div>
+            </div>
+
+            <button type="button" class="btn-modal-close" id="btnModalClose">🚚 Carregar Novo Caminhão</button>
+        </div>
+    </div>
 
     <!-- Rodapé (Footer) -->
     <footer class="footer">
