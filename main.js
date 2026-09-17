@@ -5,7 +5,118 @@
  * ====================================================================
  */
 
-document.addEventListener('DOMContentLoaded', () => {
+/* ===================================================
+   AUTENTICAÇÃO (SUPABASE SSO)
+   =================================================== */
+const supabaseUrl = 'https://hfvuzyusrvcfctjsflbd.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmdnV6eXVzcnZjZmN0anNmbGJkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk1OTQxODIsImV4cCI6MjEwNTE3MDE4Mn0.REM2TaC51ySPfLtHIbcMzw6lqLb7eUBZ_onucY-WZEo';
+
+let supabaseClient = null;
+if (window.supabase) {
+    const { createClient } = window.supabase;
+    supabaseClient = createClient(supabaseUrl, supabaseKey);
+}
+
+function openAuthModal() {
+    const modal = document.getElementById('authModal');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeAuthModal() {
+    const modal = document.getElementById('authModal');
+    if (modal) modal.style.display = 'none';
+}
+
+async function signInWithGoogle() {
+    if (!supabaseClient) return;
+    try {
+        // Redirecionamento dinâmico que preserva o subdiretório (como no GitHub Pages)
+        const redirectUrl = window.location.href.split('#')[0].split('?')[0];
+        const { error } = await supabaseClient.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: redirectUrl
+            }
+        });
+        if (error) throw error;
+    } catch (error) {
+        console.error('Erro ao fazer login com Google:', error.message);
+    }
+}
+
+async function signOutUser() {
+    if (!supabaseClient) return;
+    try {
+        const { error } = await supabaseClient.auth.signOut();
+        if (error) throw error;
+    } catch (error) {
+        console.error('Erro ao fazer logout:', error.message);
+    }
+}
+
+function cleanUrlHash() {
+    // Limpa os tokens da barra de endereços (fragmentos deixados pelo OAuth)
+    if (window.location.hash.includes('access_token')) {
+        window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+}
+
+function updateAuthUI(session) {
+    const btnEntrar = document.getElementById('btnEntrar');
+    const userProfile = document.getElementById('userProfile');
+    const userName = document.getElementById('userName');
+    const userAvatar = document.getElementById('userAvatar');
+
+    if (!btnEntrar || !userProfile) return;
+
+    if (session && session.user) {
+        btnEntrar.style.display = 'none';
+        userProfile.style.display = 'flex';
+        
+        const meta = session.user.user_metadata;
+        if (meta) {
+            if (userName) userName.textContent = meta.name ? meta.name.split(' ')[0] : 'Aluno';
+            if (userAvatar) {
+                userAvatar.src = meta.avatar_url || 'imgs/default-avatar.png';
+                // Fallback seguro caso o avatar do Google falhe (ex: bloqueadores, proxy)
+                userAvatar.onerror = function() {
+                    this.onerror = null;
+                    this.src = 'imgs/logo-ufpr.jpg';
+                };
+            }
+        }
+        closeAuthModal();
+        cleanUrlHash(); // Limpa a URL se o usuário acabou de logar e retornou
+    } else {
+        btnEntrar.style.display = 'block';
+        userProfile.style.display = 'none';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    // === Inicialização do Supabase Auth UI ===
+    if (supabaseClient) {
+        const btnEntrar = document.getElementById('btnEntrar');
+        const btnSair = document.getElementById('btnSair');
+        const btnGoogleLogin = document.getElementById('btnGoogleLogin');
+        const closeAuthModalBtn = document.getElementById('closeAuthModal');
+
+        if (btnEntrar) btnEntrar.addEventListener('click', openAuthModal);
+        if (closeAuthModalBtn) closeAuthModalBtn.addEventListener('click', closeAuthModal);
+        if (btnGoogleLogin) btnGoogleLogin.addEventListener('click', signInWithGoogle);
+        if (btnSair) btnSair.addEventListener('click', signOutUser);
+
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        updateAuthUI(session);
+
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
+                cleanUrlHash();
+            }
+            updateAuthUI(session);
+        });
+    }
+
     // Inicializa o Capítulo 1: Setor de Corte (se a página contiver a oficina de corte)
     initSetorDeCorte();
 

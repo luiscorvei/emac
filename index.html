@@ -7,6 +7,7 @@
     <!-- Importando a fonte Inter do Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -27,8 +28,17 @@
         </div>
         <div class="nav-center">EMAC</div>
         <div class="nav-right">
-            <a href="#sobre">Sobre</a>
-            <a href="#livro">Livro</a>
+            <a href="index.html" style="color: #d32f2f; font-weight: 800;">Início</a>
+            <a href="sobre.html">Sobre</a>
+            <a href="EMAC-LIVRO.pdf" target="_blank" rel="noopener noreferrer">Livro</a>
+            <div id="authContainer" class="auth-container">
+                <button id="btnEntrar" class="auth-btn-entrar">Entrar</button>
+                <div id="userProfile" class="user-profile-badge" style="display: none;">
+                    <img id="userAvatar" src="" alt="Avatar" class="auth-avatar">
+                    <span id="userName" class="auth-user-name"></span>
+                    <button id="btnSair" class="auth-btn-sair">Sair</button>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -109,10 +119,10 @@
             <div class="footer-col">
                 <h3 class="footer-title">Recursos</h3>
                 <ul class="footer-links">
-                    <li><a href="#livro">Livro Didático</a></li>
+                    <li><a href="EMAC-LIVRO.pdf" target="_blank" rel="noopener noreferrer">Livro Didático</a></li>
                     <li><a href="https://www.ufpr.br" target="_blank" rel="noopener noreferrer">Portal UFPR</a></li>
                     <li><a href="#materiais">Materiais de Apoio</a></li>
-                    <li><a href="#sobre">Sobre o Projeto</a></li>
+                    <li><a href="sobre.html">Sobre o Projeto</a></li>
                 </ul>
             </div>
 
@@ -131,6 +141,19 @@
             <p>&copy; 2026 EMAC - UFPR. Todos os direitos reservados.</p>
         </div>
     </footer>
+
+    <!-- Modal de Autenticação -->
+    <div id="authModal" class="modal-backdrop" style="display: none;">
+        <div class="auth-modal-card">
+            <button id="closeAuthModal" class="close-modal-btn">&times;</button>
+            <h2>Acesso à Fábrica - EMAC</h2>
+            <p>Faça login para salvar seu progresso nas atividades procedurais e simulações matemáticas.</p>
+            <button id="btnGoogleLogin" class="btn-google">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo">
+                <span>Continuar com o Google</span>
+            </button>
+        </div>
+    </div>
 
     <!-- Script Principal Unificado -->
     <script src="main.js"></script>
