@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centro de Treinamento - EMAC</title>
+    <!-- Importando a fonte Inter do Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* ESTILOS ESPECÍFICOS DO CENTRO DE TREINAMENTO (ESTÉTICA KHAN ACADEMY + LEGO) */
+
+        .training-container {
+            max-width: 1100px;
+            margin: 40px auto 80px;
+            padding: 0 20px;
+        }
+
+        /* BANNER DE LEGENDA DOS NÍVEIS (KHAN ACADEMY STYLE) */
+        .legend-card {
+            background: #ffffff;
+            border: 2px solid #e0e0e0;
+            border-radius: 16px;
+            padding: 24px 28px;
+            margin-bottom: 36px;
+            box-shadow: 0 6px 0 #cfd8dc, 0 12px 24px rgba(0, 0, 0, 0.05);
+        }
+
+        .legend-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 18px;
+            padding-bottom: 14px;
+            border-bottom: 2px solid #f0f2f5;
+        }
+
+        .legend-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* GRID DA LEGENDA */
+        .mastery-legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+        }
+
+        .legend-item {
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: transform 0.2s ease;
+        }
+
+        .legend-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .legend-item-top {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-badge {
+            font-size: 0.8rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .legend-desc {
+            font-size: 0.8rem;
+            color: #64748b;
+            line-height: 1.35;
+            font-weight: 500;
+        }
+
+        /* CORES E ESTILOS DOS NÍVEIS DE PROFICIÊNCIA */
+        .badge-level-0 { background: #f1f5f9; color: #64748b; border: 1.5px solid #cbd5e1; }
+        .badge-level-1 { background: #e0f2fe; color: #0369a1; border: 1.5px solid #7dd3fc; }
+        .badge-level-2 { background: #e0e7ff; color: #4338ca; border: 1.5px solid #a5b4fc; }
+        .badge-level-3 { background: #d1fae5; color: #047857; border: 1.5px solid #6ee7b7; }
+        .badge-level-4 { background: #fef3c7; color: #b45309; border: 1.5px solid #fcd34d; box-shadow: 0 2px 0 #d97706; }
+
+        /* MEDIDOR DE 4 SEGMENTOS (ESTILO KHAN ACADEMY) */
+        .mastery-meter {
+            display: flex;
+            gap: 4px;
+            height: 10px;
+            width: 100%;
+            background: #e2e8f0;
+            border-radius: 6px;
+            padding: 2px;
+            box-sizing: border-box;
+        }
+
+        .meter-segment {
+            flex: 1;
+            height: 100%;
+            border-radius: 3px;
+            background: #cbd5e1;
+            transition: all 0.3s ease;
+        }
+
+        /* Segmentos preenchidos conforme o nível */
+        .meter-fill-1 .meter-segment:nth-child(1) { background: #0284c7; }
+        
+        .meter-fill-2 .meter-segment:nth-child(1),
+        .meter-fill-2 .meter-segment:nth-child(2) { background: #4f46e5; }
+
+        .meter-fill-3 .meter-segment:nth-child(1),
+        .meter-fill-3 .meter-segment:nth-child(2),
+        .meter-fill-3 .meter-segment:nth-child(3) { background: #059669; }
+
+        .meter-fill-4 .meter-segment:nth-child(1),
+        .meter-fill-4 .meter-segment:nth-child(2),
+        .meter-fill-4 .meter-segment:nth-child(3),
+        .meter-fill-4 .meter-segment:nth-child(4) { background: #f59e0b; box-shadow: 0 0 6px rgba(245, 158, 11, 0.6); }
+
+        /* LISTA DOS 5 BLOCOS DE CAPÍTULO */
+        .chapters-sequence {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* BLOCO INDIVIDUAL ESTILO LEGO */
+        .chapter-block {
+            background: #ffffff;
+            border: 2px solid #e0e0e0;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 6px 0 #cfd8dc, 0 10px 20px rgba(0, 0, 0, 0.06);
+            display: grid;
+            grid-template-columns: 80px 1fr 260px;
+            gap: 24px;
+            align-items: center;
+            position: relative;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .chapter-block:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 0 #b0bec5, 0 14px 26px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Efeito de abotoamento Lego no topo do bloco */
+        .chapter-block::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 28px;
+            right: 28px;
+            height: 6px;
+            background: radial-gradient(circle, #e0e0e0 40%, #bdbdbd 45%, transparent 48%) 0 0/20px 6px;
+            background-repeat: repeat-x;
+        }
+
+        /* ÍCONE / NÚMERO DO CAPÍTULO EM PEÇA LEGO */
+        .block-lego-stud {
+            width: 76px;
+            height: 76px;
+            background: #d32f2f;
+            background-image: linear-gradient(180deg, #ef5350 0%, #d32f2f 100%);
+            border: 2px solid #b71c1c;
+            border-radius: 14px;
+            box-shadow: 0 5px 0 #9a1b1b, 0 8px 16px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            user-select: none;
+            position: relative;
+        }
+
+        .block-lego-stud::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            width: 32px;
+            height: 6px;
+            background: #ef5350;
+            border: 2px solid #b71c1c;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .stud-icon {
+            font-size: 1.6rem;
+            line-height: 1;
+        }
+
+        .stud-label {
+            font-size: 0.72rem;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        /* Cores temáticas para os ícones dos 5 blocos */
+        .block-1 .block-lego-stud { background: linear-gradient(180deg, #e53935 0%, #c62828 100%); border-color: #8e0000; box-shadow: 0 5px 0 #8e0000; }
+        .block-2 .block-lego-stud { background: linear-gradient(180deg, #1e88e5 0%, #1565c0 100%); border-color: #0d47a1; box-shadow: 0 5px 0 #0d47a1; }
+        .block-3 .block-lego-stud { background: linear-gradient(180deg, #fb8c00 0%, #ef6c00 100%); border-color: #b75100; box-shadow: 0 5px 0 #b75100; }
+        .block-4 .block-lego-stud { background: linear-gradient(180deg, #43a047 0%, #2e7d32 100%); border-color: #1b5e20; box-shadow: 0 5px 0 #1b5e20; }
+        .block-5 .block-lego-stud { background: linear-gradient(180deg, #8e24aa 0%, #6a1b9a 100%); border-color: #4a148c; box-shadow: 0 5px 0 #4a148c; }
+
+        /* INFORMAÇÕES DO CAPÍTULO */
+        .block-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .block-header-line {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .block-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #111;
+            margin: 0;
+        }
+
+        .block-subtitle {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #475569;
+            margin: 0;
+        }
+
+        /* STATUS E PROGRESSO DO BLOCO */
+        .block-status-area {
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .block-status-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .status-badge-current {
+            font-size: 0.8rem;
+            font-weight: 800;
+            padding: 5px 12px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-transform: uppercase;
+        }
+
+        .status-level-score {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: #475569;
+        }
+
+        /* BOTÃO DE PRÁTICA (INERTE) */
+        .block-actions {
+            display: flex;
+            margin-top: 4px;
+        }
+
+        .btn-practice {
+            flex: 1;
+            background: #2563eb;
+            background-image: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+            color: #ffffff;
+            border: 1.5px solid #1d4ed8;
+            border-radius: 8px;
+            padding: 9px 12px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 3px 0 #1e40af;
+            transition: all 0.1s ease;
+            text-align: center;
+            user-select: none;
+        }
+
+        .btn-practice:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 0 #1e40af;
+        }
+
+        .btn-practice:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #1e40af;
+        }
+
+        /* RESPONSIVIDADE */
+        @media (max-width: 860px) {
+            .chapter-block {
+                grid-template-columns: 70px 1fr;
+            }
+            .block-status-area {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .chapter-block {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .block-lego-stud {
+                margin: 0 auto;
+            }
+            .block-header-line {
+                justify-content: center;
+            }
+            .legend-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Faixa superior de Lego -->
+    <div class="lego-topbar"></div>
+    
+    <!-- Menu Navbar -->
+    <header class="navbar">
+        <div class="nav-left">
+            <a href="https://www.ufpr.br" target="_blank" rel="noopener noreferrer" class="logo-ufpr-link" title="UFPR - Universidade Federal do Paraná">
+                <img src="./imgs/logo-ufpr.jpg" alt="Logo UFPR" class="logo-ufpr" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+                <div class="logo-ufpr-placeholder" style="display: none;">
+                    <span>UFPR</span>
+                </div>
+            </a>
+        </div>
+        <div class="nav-center">
+            <a href="index.html" style="text-decoration: none; color: inherit;">EMAC</a>
+        </div>
+        <div class="nav-right">
+            <a href="index.html">Início</a>
+            <a href="sobre.html">Sobre</a>
+            <a href="EMAC-LIVRO.pdf" target="_blank" rel="noopener noreferrer">Livro</a>
+            <div id="authContainer" class="auth-container">
+                <button id="btnEntrar" class="auth-btn-entrar">Entrar</button>
+                <div id="userProfile" class="user-profile-badge" style="display: none;">
+                    <img id="userAvatar" src="" alt="Avatar" class="auth-avatar">
+                    <span id="userName" class="auth-user-name"></span>
+                    <button id="btnSair" class="auth-btn-sair">Sair</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="training-container">
+        
+        <!-- Header da Página -->
+        <div class="sector-header">
+            <div class="sector-badge">CENTRO DE TREINAMENTO</div>
+            <h1>Centro de Treinamento da Fábrica de Móveis</h1>
+            <p>Evolua suas habilidades matemáticas completando as atividades da fábrica de móveis. Alcance o domínio máximo em cada setor!</p>
+        </div>
+
+        <!-- Legenda dos Níveis (Estilo Khan Academy) -->
+        <section class="legend-card" aria-label="Legenda dos Níveis de Aprendizado">
+            <div class="legend-header">
+                <div class="legend-title">
+                    <span style="font-size: 1.3rem;">📊</span>
+                    <span>Sistema de Aprendizado e Domínio</span>
+                </div>
+            </div>
+
+            <div class="mastery-legend-grid">
+                <!-- Nível 0 -->
+                <div class="legend-item">
+                    <div class="legend-item-top">
+                        <span class="legend-badge badge-level-0">Não iniciado</span>
+                    </div>
+                    <div class="mastery-meter">
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                    </div>
+                    <div class="legend-desc">Nenhuma atividade realizada neste capítulo ainda.</div>
+                </div>
+
+                <!-- Nível 1 -->
+                <div class="legend-item">
+                    <div class="legend-item-top">
+                        <span class="legend-badge badge-level-1">Tentou</span>
+                    </div>
+                    <div class="mastery-meter meter-fill-1">
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                    </div>
+                    <div class="legend-desc">Completou 1 tentativa da atividade no setor.</div>
+                </div>
+
+                <!-- Nível 2 -->
+                <div class="legend-item">
+                    <div class="legend-item-top">
+                        <span class="legend-badge badge-level-2">Familiar</span>
+                    </div>
+                    <div class="mastery-meter meter-fill-2">
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                    </div>
+                    <div class="legend-desc">Tentou novamente e acertou todas as questões.</div>
+                </div>
+
+                <!-- Nível 3 -->
+                <div class="legend-item">
+                    <div class="legend-item-top">
+                        <span class="legend-badge badge-level-3">Proficiente</span>
+                    </div>
+                    <div class="mastery-meter meter-fill-3">
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                    </div>
+                    <div class="legend-desc">Segunda vez consecutiva com 100% de acerto.</div>
+                </div>
+
+                <!-- Nível 4 -->
+                <div class="legend-item">
+                    <div class="legend-item-top">
+                        <span class="legend-badge badge-level-4">👑 Dominado</span>
+                    </div>
+                    <div class="mastery-meter meter-fill-4">
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                    </div>
+                    <div class="legend-desc">Nível máximo: domínio pleno de todos os conceitos!</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sequência de 5 Blocos (Um para cada capítulo do livro texto) -->
+        <section class="chapters-sequence" id="chaptersSequence">
+
+            <!-- BLOCO 1: CAPÍTULO 1 -->
+            <article class="chapter-block block-1" id="block-chap-1" data-chapter="1">
+                <div class="block-lego-stud">
+                    <span class="stud-icon">🪚</span>
+                    <span class="stud-label">CAP 1</span>
+                </div>
+                <div class="block-info">
+                    <div class="block-header-line">
+                        <h2 class="block-title">Capítulo 1: Setor de Corte</h2>
+                    </div>
+                    <p class="block-subtitle">Função Afim e Custos Fixos</p>
+                </div>
+                <div class="block-status-area">
+                    <div class="block-status-header">
+                        <span class="status-badge-current badge-level-0" id="badge-chap-1">Não iniciado</span>
+                        <span class="status-level-score" id="score-chap-1">0/4</span>
+                    </div>
+                    <div class="mastery-meter" id="meter-chap-1">
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                    </div>
+                    <div class="block-actions">
+                        <button class="btn-practice" type="button">Realizar Atividades</button>
+                    </div>
+                </div>
+            </article>
+
+            <!-- BLOCO 2: CAPÍTULO 2 -->
+            <article class="chapter-block block-2" id="block-chap-2" data-chapter="2">
+                <div class="block-lego-stud">
+                    <span class="stud-icon">🛠️</span>
+                    <span class="stud-label">CAP 2</span>
+                </div>
+                <div class="block-info">
+                    <div class="block-header-line">
+                        <h2 class="block-title">Capítulo 2: Setor de Montagem</h2>
+                    </div>
+                    <p class="block-subtitle">Inequações e Tempo Limite</p>
+                </div>
+                <div class="block-status-area">
+                    <div class="block-status-header">
+                        <span class="status-badge-current badge-level-0" id="badge-chap-2">Não iniciado</span>
+                        <span class="status-level-score" id="score-chap-2">0/4</span>
+                    </div>
+                    <div class="mastery-meter" id="meter-chap-2">
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                    </div>
+                    <div class="block-actions">
+                        <button class="btn-practice" type="button">Realizar Atividades</button>
+                    </div>
+                </div>
+            </article>
+
+            <!-- BLOCO 3: CAPÍTULO 3 -->
+            <article class="chapter-block block-3" id="block-chap-3" data-chapter="3">
+                <div class="block-lego-stud">
+                    <span class="stud-icon">🚚</span>
+                    <span class="stud-label">CAP 3</span>
+                </div>
+                <div class="block-info">
+                    <div class="block-header-line">
+                        <h2 class="block-title">Capítulo 3: Setor de Logística</h2>
+                    </div>
+                    <p class="block-subtitle">Sistemas de Inequações e Transporte</p>
+                </div>
+                <div class="block-status-area">
+                    <div class="block-status-header">
+                        <span class="status-badge-current badge-level-0" id="badge-chap-3">Não iniciado</span>
+                        <span class="status-level-score" id="score-chap-3">0/4</span>
+                    </div>
+                    <div class="mastery-meter" id="meter-chap-3">
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                    </div>
+                    <div class="block-actions">
+                        <button class="btn-practice" type="button">Realizar Atividades</button>
+                    </div>
+                </div>
+            </article>
+
+            <!-- BLOCO 4: CAPÍTULO 4 -->
+            <article class="chapter-block block-4" id="block-chap-4" data-chapter="4">
+                <div class="block-lego-stud">
+                    <span class="stud-icon">📈</span>
+                    <span class="stud-label">CAP 4</span>
+                </div>
+                <div class="block-info">
+                    <div class="block-header-line">
+                        <h2 class="block-title">Capítulo 4: Setor de Vendas</h2>
+                    </div>
+                    <p class="block-subtitle">Função Objetivo e Receita</p>
+                </div>
+                <div class="block-status-area">
+                    <div class="block-status-header">
+                        <span class="status-badge-current badge-level-0" id="badge-chap-4">Não iniciado</span>
+                        <span class="status-level-score" id="score-chap-4">0/4</span>
+                    </div>
+                    <div class="mastery-meter" id="meter-chap-4">
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                    </div>
+                    <div class="block-actions">
+                        <button class="btn-practice" type="button">Realizar Atividades</button>
+                    </div>
+                </div>
+            </article>
+
+            <!-- BLOCO 5: CAPÍTULO 5 -->
+            <article class="chapter-block block-5" id="block-chap-5" data-chapter="5">
+                <div class="block-lego-stud">
+                    <span class="stud-icon">👑</span>
+                    <span class="stud-label">CAP 5</span>
+                </div>
+                <div class="block-info">
+                    <div class="block-header-line">
+                        <h2 class="block-title">Capítulo 5: Otimização de Lucro</h2>
+                    </div>
+                    <p class="block-subtitle">Programação Linear e Vértices Ótimos</p>
+                </div>
+                <div class="block-status-area">
+                    <div class="block-status-header">
+                        <span class="status-badge-current badge-level-0" id="badge-chap-5">Não iniciado</span>
+                        <span class="status-level-score" id="score-chap-5">0/4</span>
+                    </div>
+                    <div class="mastery-meter" id="meter-chap-5">
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                        <div class="meter-segment"></div>
+                    </div>
+                    <div class="block-actions">
+                        <button class="btn-practice" type="button">Realizar Atividades</button>
+                    </div>
+                </div>
+            </article>
+
+        </section>
+
+    </main>
+
+    <!-- Rodapé (Footer) -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3 class="footer-title">EMAC</h3>
+                <p class="footer-institution">
+                    Projeto acadêmico vinculado à <strong>UFPR</strong>.
+                </p>
+            </div>
+            <div class="footer-col">
+                <h3 class="footer-title">Capítulos</h3>
+                <ul class="footer-links">
+                    <li><a href="setordecorte.html">Capítulo 1: Setor de Corte</a></li>
+                    <li><a href="setordemontagem.html">Capítulo 2: Setor de Montagem</a></li>
+                    <li><a href="setordelogistica.html">Capítulo 3: Setor de Logística</a></li>
+                    <li><a href="setordevendas.html">Capítulos 4 e 5: Setor de Vendas</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3 class="footer-title">Recursos</h3>
+                <ul class="footer-links">
+                    <li><a href="EMAC-LIVRO.pdf" target="_blank" rel="noopener noreferrer">Livro Didático</a></li>
+                    <li><a href="https://www.ufpr.br" target="_blank" rel="noopener noreferrer">Portal UFPR</a></li>
+                    <li><a href="centrodetreinamento.html">Centro de Treinamento</a></li>
+                    <li><a href="sobre.html">Sobre o Projeto</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3 class="footer-title">Informações</h3>
+                <ul class="footer-info">
+                    <li><strong>Instituição:</strong> Universidade Federal do Paraná</li>
+                    <li><strong>Curso:</strong> Matemática Industrial / Exatas</li>
+                    <li><strong>Email:</strong> emac@ufpr.br</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 EMAC - UFPR. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Modal de Autenticação -->
+    <div id="authModal" class="modal-backdrop" style="display: none;">
+        <div class="auth-modal-card">
+            <button id="closeAuthModal" class="close-modal-btn">&times;</button>
+            <h2>Acesso à Fábrica - EMAC</h2>
+            <p>Faça login para salvar seu progresso nas atividades</p>
+            <button id="btnGoogleLogin" class="btn-google">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo">
+                <span>Continuar com o Google</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Script Principal Unificado -->
+    <script src="main.js"></script>
+
+    <!-- Script de Inicialização dos Níveis Visuais Khan Academy -->
+    <script>
+        const MASTERY_LEVELS = [
+            { id: 0, label: 'Não iniciado', class: 'badge-level-0', meterClass: '' },
+            { id: 1, label: 'Tentou', class: 'badge-level-1', meterClass: 'meter-fill-1' },
+            { id: 2, label: 'Familiar', class: 'badge-level-2', meterClass: 'meter-fill-2' },
+            { id: 3, label: 'Proficiente', class: 'badge-level-3', meterClass: 'meter-fill-3' },
+            { id: 4, label: '👑 Dominado', class: 'badge-level-4', meterClass: 'meter-fill-4' }
+        ];
+
+        let chapterProgress = {
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 0,
+            5: 0
+        };
+
+        function updateChapterUI(chapNum) {
+            const levelIdx = chapterProgress[chapNum] || 0;
+            const levelInfo = MASTERY_LEVELS[levelIdx];
+
+            const badgeEl = document.getElementById(`badge-chap-${chapNum}`);
+            const scoreEl = document.getElementById(`score-chap-${chapNum}`);
+            const meterEl = document.getElementById(`meter-chap-${chapNum}`);
+
+            if (badgeEl) {
+                badgeEl.className = `status-badge-current ${levelInfo.class}`;
+                badgeEl.innerHTML = levelInfo.label;
+            }
+
+            if (scoreEl) {
+                scoreEl.textContent = `${levelIdx}/4`;
+            }
+
+            if (meterEl) {
+                meterEl.className = `mastery-meter ${levelInfo.meterClass}`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            for (let i = 1; i <= 5; i++) {
+                updateChapterUI(i);
+            }
+        });
+    </script>
+</body>
+</html>

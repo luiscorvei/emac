@@ -56,7 +56,7 @@
                 </div>
 
                 <!-- Card de Preços do Mercado (gerados por rodada) -->
-                <div class="market-prices-container">
+                <div id="tourMarketPrices" class="market-prices-container">
                     <div class="market-price-card market-mesa">
                         <div class="market-price-label">🪑 Preço Mesa (a)</div>
                         <div id="marketPriceA" class="market-price-value">R$ —</div>
@@ -77,23 +77,23 @@
                 </div>
 
                 <!-- Indicadores de Custos e Meta de Eficiência -->
-                <div class="round-finance-strip">
-                    <div class="finance-item">
+                <div id="tourFinanceStrip" class="round-finance-strip">
+                    <div class="finance-item" id="tourCostItem">
                         <span class="finance-label">🏢 Custo Fixo</span>
                         <strong id="roundOpCostDisplay" class="finance-value cost-value">-R$ 0</strong>
                     </div>
-                    <div class="finance-item">
+                    <div class="finance-item" id="tourMinEffItem">
                         <span class="finance-label">🎯 Meta Mínima</span>
                         <strong id="roundMinEffDisplay" class="finance-value eff-value">≥ 0%</strong>
                     </div>
-                    <div class="finance-item">
+                    <div class="finance-item" id="tourToleranceItem">
                         <span class="finance-label">📐 Tolerância</span>
                         <strong id="roundToleranceDisplay" class="finance-value tol-value">±8%</strong>
                     </div>
                 </div>
 
                 <!-- Fórmula da Função Objetivo -->
-                <div class="objective-formula-banner">
+                <div id="tourFormulaBanner" class="objective-formula-banner">
                     <div class="formula-header">
                         <span>Função Objetivo</span>
                         <span id="formulaZLabel" class="formula-z-badge">Z = ax + by</span>
@@ -110,12 +110,26 @@
                         <strong class="zt-banner-title">AVISO: LUCRO PERFEITO OBRIGATÓRIO!</strong>
                     </div>
                     <div class="zt-banner-desc">
-                        A partir desta rodada, tolerância zero ativada: encontre <strong>exatamente o vértice ótimo</strong> ($Z^*$). Qualquer desvio perde 1 vida!
+                        A partir desta rodada, tolerância zero ativada: encontre <strong>exatamente o vértice ótimo</strong> (Z*). Você pode arrastar o slider ou <strong>digitar diretamente o valor exato no novo campo de Z abaixo</strong>!
+                    </div>
+                </div>
+
+                <!-- Banner da Lupa de Precisão (Upgrade Ativo por 1 Rodada) -->
+                <div id="magnifierBanner" class="magnifier-banner" style="display: none;">
+                    <div class="magnifier-header">
+                        <span class="magnifier-title">
+                            <span>🔍</span>
+                            <span>Lupa de Precisão Ativa</span>
+                        </span>
+                        <span id="magnifierPercentage" class="magnifier-pct-badge">0.0% do Ótimo</span>
+                    </div>
+                    <div class="magnifier-bar-container">
+                        <div id="magnifierBarFill" class="magnifier-bar-fill" style="width: 0%;"></div>
                     </div>
                 </div>
 
                 <!-- Slider Varrer Lucro -->
-                <div class="slider-lucro-wrapper">
+                <div id="tourSliderWrapper" class="slider-lucro-wrapper">
                     <div class="slider-lucro-header">
                         <span>🎚️ Varrer Lucro (Z)</span>
                         <strong id="sliderZValue" class="slider-z-readout">Z = 0</strong>
@@ -125,10 +139,22 @@
                         <span>Z = 0</span>
                         <span id="sliderMaxLabel">Z = máx</span>
                     </div>
+
+                    <!-- Campo de Digitação Direta de Z (Desbloqueado a partir da Rodada 12) -->
+                    <div id="directZInputWrapper" class="direct-z-wrapper" style="display: none;">
+                        <label for="inputDirectZ" class="direct-z-label">
+                            <span>✍️</span>
+                            <span>Digitar Z exato:</span>
+                        </label>
+                        <div class="direct-z-input-box">
+                            <span class="direct-z-currency">R$</span>
+                            <input type="number" id="inputDirectZ" class="direct-z-input" min="0" step="1" placeholder="0">
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Botão de Ação Principal -->
-                <div class="validate-action-container">
+                <div id="tourActionBtns" class="validate-action-container">
                     <button id="btnValidarProducao" class="btn-validar-producao" type="button" disabled>
                         <span id="btnValidarIcon">🔒</span>
                         <span id="btnValidarText">Validar Produção</span>
@@ -179,12 +205,12 @@
                 <!-- HUD (Status do Jogo: Vidas, Tempo, Rodada, Caixa) -->
                 <div id="gameHud" class="game-hud">
                     <!-- Caixa Acumulado -->
-                    <div class="hud-stat hud-cash">
+                    <div id="tourHudCash" class="hud-stat hud-cash">
                         <div class="hud-stat-label">💰 Caixa</div>
                         <div id="hudCashValue" class="hud-stat-value cash-value">R$ 0</div>
                     </div>
                     <!-- Vidas -->
-                    <div class="hud-stat hud-lives">
+                    <div id="tourHudLives" class="hud-stat hud-lives">
                         <div class="hud-stat-label">❤️ Vidas</div>
                         <div id="hudHearts" class="hud-hearts">
                             <span class="heart-icon" data-index="0">♥</span>
@@ -193,7 +219,7 @@
                         </div>
                     </div>
                     <!-- Timer -->
-                    <div class="hud-stat hud-timer">
+                    <div id="tourHudTimer" class="hud-stat hud-timer">
                         <div class="hud-stat-label">⏱️ Tempo</div>
                         <div id="hudTimerValue" class="hud-stat-value timer-value">20s</div>
                         <div class="timer-bar-track">
@@ -201,7 +227,7 @@
                         </div>
                     </div>
                     <!-- Rodada -->
-                    <div class="hud-stat hud-round">
+                    <div id="tourHudRound" class="hud-stat hud-round">
                         <div class="hud-stat-label">🏭 Rodada</div>
                         <div id="hudRoundValue" class="hud-stat-value round-value">#0</div>
                     </div>
@@ -258,6 +284,33 @@
         </div>
     </div>
 
+    <!-- Tour Guiado Interativo: Destaque de Elementos com Caixa Explicativa e Setas -->
+    <div id="gameTourOverlay" class="game-tour-overlay" style="display: none;">
+        <!-- Máscara de Holofote (recorte SVG ou overlay) -->
+        <div id="tourSpotlightBox" class="tour-spotlight-box"></div>
+
+        <!-- Caixa Flutuante de Explicação do Elemento -->
+        <div id="tourTooltipCard" class="tour-tooltip-card">
+            <button id="btnTourClose" class="tour-close-btn" type="button" title="Pular tour e jogar">&times;</button>
+            
+            <div class="tour-card-header">
+                <span id="tourStepBadge" class="tour-step-badge">Passo 1 de 7</span>
+                <span id="tourStepIcon" class="tour-step-icon">🎯</span>
+            </div>
+
+            <h3 id="tourStepTitle" class="tour-step-title">Título do Elemento</h3>
+            <p id="tourStepDesc" class="tour-step-desc">Explicação didática e detalhada do que este elemento faz e qual o seu objetivo.</p>
+
+            <div class="tour-card-footer">
+                <button id="btnTourSkip" class="btn-tour-secondary" type="button">Pular Tour</button>
+                <div class="tour-nav-arrows">
+                    <button id="btnTourPrev" class="btn-tour-arrow" type="button" title="Elemento anterior" disabled>←</button>
+                    <button id="btnTourNext" class="btn-tour-arrow btn-tour-primary" type="button" title="Próximo elemento">→</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal: Game Over -->
     <div id="gameOverModal" class="gameover-modal-backdrop">
         <div class="gameover-modal">
@@ -291,6 +344,7 @@
     <!-- Modal: Acerto Crítico (Celebração) -->
     <div id="perfectModal" class="perfect-modal-backdrop">
         <div class="perfect-modal">
+            <button id="btnClosePerfectModal" class="modal-corner-close" type="button" aria-label="Fechar e continuar">&times;</button>
             <div class="perfect-icon">🏆</div>
             <h3 class="perfect-title">Decisão Perfeita!</h3>
             <p class="perfect-subtitle">Você encontrou o <strong>vértice ótimo</strong> — lucro máximo absoluto!</p>
@@ -300,16 +354,19 @@
             </div>
             <div id="perfectFinanceBreakdown" class="modal-finance-breakdown"></div>
             <div id="coinRain" class="coin-rain-container"></div>
+            <button id="btnContinuePerfect" class="btn-modal-action-ok" type="button">Continuar →</button>
         </div>
     </div>
 
     <!-- Modal: Falha / Advertência de Produção -->
     <div id="rejectModal" class="reject-modal-backdrop">
         <div class="reject-modal">
+            <button id="btnCloseRejectModal" class="modal-corner-close" type="button" aria-label="Fechar e continuar">&times;</button>
             <div id="rejectIcon" class="reject-icon">⚠️</div>
             <h3 id="rejectTitle" class="reject-title">Produção Reprovada!</h3>
             <p id="rejectReason" class="reject-subtitle">Sua decisão não atendeu aos critérios dos acionistas.</p>
             <div id="rejectPenalty" class="reject-penalty">-1 Vida ❤️</div>
+            <button id="btnContinueReject" class="btn-modal-action-danger" type="button">Continuar →</button>
         </div>
     </div>
 
@@ -328,6 +385,13 @@
                         <span>Você deve posicionar a reta de lucro <strong>literalmente no vértice ótimo</strong></span>
                     </div>
                 </div>
+                <div class="zt-rule-card" style="border-color: #7c3aed; background: #faf5ff;">
+                    <span class="zt-rule-icon">✍️</span>
+                    <div class="zt-rule-info">
+                        <strong style="color: #6d28d9;">Digitação Direta Liberada!</strong>
+                        <span>Agora você pode <strong>digitar o valor numérico de Z</strong> no campo que surgiu abaixo do slider, garantindo o valor exato sem depender da sensibilidade do mouse!</span>
+                    </div>
+                </div>
                 <div class="zt-rule-card">
                     <span class="zt-rule-icon">🚫</span>
                     <div class="zt-rule-info">
@@ -339,7 +403,7 @@
                     <span class="zt-rule-icon">⏱️</span>
                     <div class="zt-rule-info">
                         <strong>Velocidade Máxima</strong>
-                        <span>O tempo por rodada está ultracurto. Seja rápido e preciso no slider!</span>
+                        <span>O tempo por rodada está ultracurto. Seja rápido e preciso!</span>
                     </div>
                 </div>
             </div>
@@ -378,7 +442,7 @@
                 <ul class="footer-links">
                     <li><a href="EMAC-LIVRO.pdf" target="_blank" rel="noopener noreferrer">Livro Didático</a></li>
                     <li><a href="https://www.ufpr.br" target="_blank" rel="noopener noreferrer">Portal UFPR</a></li>
-                    <li><a href="index.html#materiais">Materiais de Apoio</a></li>
+                    <li><a href="centrodetreinamento.html">Centro de Treinamento</a></li>
                     <li><a href="sobre.html">Sobre o Projeto</a></li>
                 </ul>
             </div>

@@ -579,7 +579,7 @@ function initSetorDeMontagem() {
         const rect = canvas.getBoundingClientRect();
         const w = rect.width;
         const h = rect.height;
-        const padLeft = 45;
+        const padLeft = 62;
         const padBottom = 42;
         const padRight = 24;
         const padTop = 24;
@@ -801,10 +801,10 @@ function initSetorDeMontagem() {
         ctx.fillText('Mesas (Eixo X) →', b.w - 16, b.padTop + b.plotHeight + 34);
 
         ctx.save();
-        ctx.translate(14, b.padTop + 40);
+        ctx.translate(18, b.padTop + b.plotHeight / 2);
         ctx.rotate(-Math.PI / 2);
         ctx.fillStyle = '#bf360c';
-        ctx.textAlign = 'left';
+        ctx.textAlign = 'center';
         ctx.fillText('Cadeiras (Eixo Y) →', 0, 0);
         ctx.restore();
         ctx.restore();
@@ -1250,7 +1250,7 @@ function initSetorDeLogistica() {
         const rect = canvas.getBoundingClientRect();
         const w = rect.width;
         const h = rect.height;
-        const padLeft = 45;
+        const padLeft = 62;
         const padBottom = 42;
         const padRight = 24;
         const padTop = 24;
@@ -1546,10 +1546,10 @@ function initSetorDeLogistica() {
         ctx.fillText('Mesas (Eixo X) →', b.w - 16, b.padTop + b.plotHeight + 34);
 
         ctx.save();
-        ctx.translate(14, b.padTop + 40);
+        ctx.translate(18, b.padTop + b.plotHeight / 2);
         ctx.rotate(-Math.PI / 2);
         ctx.fillStyle = '#bf360c';
-        ctx.textAlign = 'left';
+        ctx.textAlign = 'center';
         ctx.fillText('Cadeiras (Eixo Y) →', 0, 0);
         ctx.restore();
         ctx.restore();
@@ -2202,6 +2202,34 @@ function initMagnataDaFabrica() {
     const zeroToleranceModal = document.getElementById('zeroToleranceModal');
     const btnFecharZeroTolerance = document.getElementById('btnFecharZeroTolerance');
 
+    // Elementos do Tour Guiado Interativo
+    const gameTourOverlay = document.getElementById('gameTourOverlay');
+    const tourSpotlightBox = document.getElementById('tourSpotlightBox');
+    const tourTooltipCard = document.getElementById('tourTooltipCard');
+    const tourStepBadge = document.getElementById('tourStepBadge');
+    const tourStepIcon = document.getElementById('tourStepIcon');
+    const tourStepTitle = document.getElementById('tourStepTitle');
+    const tourStepDesc = document.getElementById('tourStepDesc');
+    const btnTourPrev = document.getElementById('btnTourPrev');
+    const btnTourNext = document.getElementById('btnTourNext');
+    const btnTourSkip = document.getElementById('btnTourSkip');
+    const btnTourClose = document.getElementById('btnTourClose');
+
+    // Botões de fechar e continuar modais de resultado
+    const btnClosePerfectModal = document.getElementById('btnClosePerfectModal');
+    const btnContinuePerfect = document.getElementById('btnContinuePerfect');
+    const btnCloseRejectModal = document.getElementById('btnCloseRejectModal');
+    const btnContinueReject = document.getElementById('btnContinueReject');
+
+    // Upgrade Lupa de Precisão
+    const magnifierBanner = document.getElementById('magnifierBanner');
+    const magnifierPercentage = document.getElementById('magnifierPercentage');
+    const magnifierBarFill = document.getElementById('magnifierBarFill');
+
+    // Digitação Direta de Z (Rodada 12+)
+    const directZInputWrapper = document.getElementById('directZInputWrapper');
+    const inputDirectZ = document.getElementById('inputDirectZ');
+
     // ── Game State ───────────────────────────────────────────────
     let state = {
         round: 0,
@@ -2226,6 +2254,9 @@ function initMagnataDaFabrica() {
         // Bússola Interativa e Modo Cego
         playerCompass: null,      // { x, y, a, b, angle } posicionado pelo jogador
         isBlindMode: false,       // ativado a partir da rodada 13 (pós-rodada 12)
+
+        // Upgrade de Lupa (1 rodada)
+        hasMagnifier: false,
 
         // Mecânicas de Dificuldade Gradativa e Economia
         operationalCost: 0,
@@ -2713,6 +2744,37 @@ function initMagnataDaFabrica() {
             ctx.stroke();
         }
 
+        // Lupa de Precisão: Desenha retículo de foco ampliado sobre o vértice ótimo Z*
+        if (state.hasMagnifier && state.optimalVertex && state.phase === 'playing') {
+            const p = mathToPixel(state.optimalVertex.vertex.x, state.optimalVertex.vertex.y);
+            const pulse = 16 + 2 * Math.sin(animFrame * 0.1);
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(p.px, p.py, pulse, 0, Math.PI * 2);
+            ctx.strokeStyle = '#2563eb';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            ctx.fillStyle = 'rgba(37, 99, 235, 0.15)';
+            ctx.fill();
+
+            // Retículo da mira da lupa
+            ctx.beginPath();
+            ctx.moveTo(p.px - pulse - 6, p.py);
+            ctx.lineTo(p.px + pulse + 6, p.py);
+            ctx.moveTo(p.px, p.py - pulse - 6);
+            ctx.lineTo(p.px, p.py + pulse + 6);
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            // Rótulo da lupa
+            ctx.font = '800 11px Inter, sans-serif';
+            ctx.fillStyle = '#1d4ed8';
+            ctx.textAlign = 'center';
+            ctx.fillText('🔍 Vértice Ótimo (Z*)', p.px, p.py - pulse - 8);
+            ctx.restore();
+        }
+
         // Draw compass arrow (gradient direction vector)
         if (state.phase === 'playing' && state.objA > 0 && state.objB > 0) {
             drawCompassArrow();
@@ -3043,6 +3105,44 @@ function initMagnataDaFabrica() {
         if (formulaZDisplay) {
             formulaZDisplay.textContent = 'Z = R$ ' + Math.round(state.currentZ);
         }
+        updateMagnifierDisplay();
+    }
+
+    function updateMagnifierDisplay() {
+        if (!magnifierBanner || !magnifierPercentage || !magnifierBarFill) return;
+        if (!state.hasMagnifier || state.phase !== 'playing') {
+            magnifierBanner.style.display = 'none';
+            return;
+        }
+
+        magnifierBanner.style.display = 'block';
+        const maxZ = state.maxZ > 0 ? state.maxZ : 1;
+        const optimalZInteger = Math.round(maxZ);
+        const currentZ = state.currentZ;
+
+        magnifierPercentage.classList.remove('optimal', 'over');
+        magnifierBarFill.classList.remove('optimal', 'over');
+
+        if (currentZ === optimalZInteger) {
+            // PONTO EXATO ÓTIMO: 100% garantido e seguro
+            magnifierPercentage.textContent = '🎯 100% (PONTO ÓTIMO EXATO Z*)';
+            magnifierPercentage.classList.add('optimal');
+            magnifierBarFill.classList.add('optimal');
+            magnifierBarFill.style.width = '100%';
+        } else if (currentZ > optimalZInteger) {
+            // Ultrapassou a região factível (Infactível)
+            const overPct = ((currentZ / maxZ) * 100).toFixed(1);
+            magnifierPercentage.textContent = '⚠️ ' + overPct + '% (FORA DA REGIÃO FACTÍVEL!)';
+            magnifierPercentage.classList.add('over');
+            magnifierBarFill.classList.add('over');
+            magnifierBarFill.style.width = '100%';
+        } else {
+            // Abaixo do ponto ótimo: nunca mostra 100% se for menor que optimalZInteger
+            const rawPct = (currentZ / maxZ) * 100;
+            const displayPct = Math.min(99.9, rawPct).toFixed(1);
+            magnifierPercentage.textContent = '🔍 ' + displayPct + '% do Ponto Ótimo (Z*)';
+            magnifierBarFill.style.width = Math.max(0, rawPct).toFixed(1) + '%';
+        }
     }
 
     function updateSlider() {
@@ -3097,6 +3197,11 @@ function initMagnataDaFabrica() {
         state.selectedUpgrade = null;
         state.playerCompass = null;
         state.isBlindMode = false;
+        state.hasMagnifier = false;
+        if (magnifierBanner) magnifierBanner.style.display = 'none';
+        if (directZInputWrapper) directZInputWrapper.style.display = 'none';
+        if (inputDirectZ) inputDirectZ.value = '0';
+        if (zeroToleranceBanner) zeroToleranceBanner.style.display = 'none';
         state.operationalCost = 0;
         state.minEfficiencyRequired = 0;
         state.currentTolerance = 0.08;
@@ -3258,12 +3363,21 @@ function initMagnataDaFabrica() {
         // Atualizar dica visual didática
         if (graphHelpTip) {
             if (state.round > 12) {
-                graphHelpTip.innerHTML = '☠️ <strong>TOLERÂNCIA ZERO & MODO CEGO:</strong> Bússola oculta e valor EXATO de Z* obrigatório! Qualquer desvio perde 1 vida.';
+                graphHelpTip.innerHTML = '☠️ <strong>TOLERÂNCIA ZERO & MODO CEGO:</strong> Bússola oculta! Digite o valor de Z ou use o slider. Qualquer desvio perde 1 vida.';
             } else if (state.round === 12) {
-                graphHelpTip.innerHTML = '☠️ <strong>TOLERÂNCIA ZERO:</strong> Encontre o valor EXATO de Z* com o slider! Qualquer desvio perde 1 vida.';
+                graphHelpTip.innerHTML = '☠️ <strong>TOLERÂNCIA ZERO:</strong> Digite o valor EXATO de Z* no campo abaixo ou use o slider! Qualquer desvio perde 1 vida.';
             } else {
                 graphHelpTip.innerHTML = '🎯 <strong>Dica:</strong> Deslize o slider <strong>"Varrer Lucro (Z)"</strong> até o último vértice do polígono!';
             }
+        }
+
+        // Exibir aviso de Tolerância Zero e Campo de Digitação Direta a partir da Rodada 12
+        if (state.round >= 12) {
+            if (zeroToleranceBanner) zeroToleranceBanner.style.display = 'block';
+            if (directZInputWrapper) directZInputWrapper.style.display = 'flex';
+        } else {
+            if (zeroToleranceBanner) zeroToleranceBanner.style.display = 'none';
+            if (directZInputWrapper) directZInputWrapper.style.display = 'none';
         }
 
         // Recalcular polígono e vértice ótimo
@@ -3272,9 +3386,10 @@ function initMagnataDaFabrica() {
         state.optimalVertex = findOptimalVertex(state.polygon, state.objA, state.objB);
         state.maxZ = state.optimalVertex ? state.optimalVertex.z : 500;
 
-        // Reset slider
+        // Reset slider e input numérico
         state.currentZ = 0;
         if (sliderVarrerLucro) sliderVarrerLucro.value = 0;
+        if (inputDirectZ) inputDirectZ.value = '0';
 
         // Enable controls
         if (btnIniciarJogo) btnIniciarJogo.classList.add('hidden');
@@ -3337,9 +3452,10 @@ function initMagnataDaFabrica() {
         const a = state.objA;
         const b = state.objB;
         const maxFeasZ = state.maxZ;
+        const optimalZInteger = Math.round(maxFeasZ);
 
         // 1. Verificar se Z está na faixa plausível do polígono
-        if (z < 0 || z > maxFeasZ * 1.05) {
+        if (z < 0 || z > maxFeasZ * 1.05 + 2) {
             playSoundFail();
             showRejectModal('Fora da Região Factível!', 'Sua reta de lucro ultrapassa todos os limites de recursos da fábrica.', '-1 Vida ❤️');
             return;
@@ -3347,13 +3463,15 @@ function initMagnataDaFabrica() {
 
         // 2. Verificar se a reta de lucro intersecta o polígono viável
         let touchesPolygon = false;
-        if (state.polygon.length >= 3) {
+        if (z === optimalZInteger || Math.abs(z - maxFeasZ) <= 2.0) {
+            touchesPolygon = true;
+        } else if (state.polygon.length >= 3) {
             for (let i = 0; i < state.polygon.length; i++) {
                 const v1 = state.polygon[i];
                 const v2 = state.polygon[(i + 1) % state.polygon.length];
                 const zV1 = a * v1.x + b * v1.y;
                 const zV2 = a * v2.x + b * v2.y;
-                if ((Math.min(zV1, zV2) - 1.5) <= z && z <= (Math.max(zV1, zV2) + 1.5)) {
+                if ((Math.min(zV1, zV2) - 2.5) <= z && z <= (Math.max(zV1, zV2) + 2.5)) {
                     touchesPolygon = true;
                     break;
                 }
@@ -3382,7 +3500,7 @@ function initMagnataDaFabrica() {
         if (state.round >= 12) {
             const diffZ = Math.abs(z - maxFeasZ);
             const strictLimit = Math.max(2, maxFeasZ * 0.0035);
-            if (diffZ > strictLimit) {
+            if (diffZ > strictLimit && z !== optimalZInteger) {
                 playSoundFail();
                 showRejectModal(
                     'Tolerância Zero (Rodada 12+)!',
@@ -3394,7 +3512,7 @@ function initMagnataDaFabrica() {
         }
 
         // 5. Verificar se é Vértice Ótimo
-        const isOptimal = Math.abs(z - maxFeasZ) <= (maxFeasZ * state.currentTolerance);
+        const isOptimal = (z === optimalZInteger) || (Math.abs(z - maxFeasZ) <= (maxFeasZ * state.currentTolerance));
 
         if (isOptimal) {
             // Acerto Crítico / Perfeito!
@@ -3474,6 +3592,12 @@ function initMagnataDaFabrica() {
     }
 
     function proceedAfterRound() {
+        // O upgrade da Lupa de Precisão dura exatamente 1 rodada
+        if (state.hasMagnifier) {
+            state.hasMagnifier = false;
+            if (magnifierBanner) magnifierBanner.style.display = 'none';
+        }
+
         // Every 2 rounds, open shop
         if (state.round > 0 && state.round % 2 === 0) {
             showShop();
@@ -3492,6 +3616,14 @@ function initMagnataDaFabrica() {
     // ── Shop (Upgrades) ──────────────────────────────────────────
 
     const UPGRADE_POOL = [
+        {
+            id: 'magnifier_lens', icon: '🔍', name: 'Lupa de Precisão',
+            desc: 'Dura 1 rodada: revela em tempo real a % exata de proximidade do ponto ótimo Z*',
+            baseCost: 1800,
+            apply: () => {
+                state.hasMagnifier = true;
+            }
+        },
         {
             id: 'expand_red_1', icon: '🔴', name: 'Expansão de Estoque Vermelho',
             desc: 'Aumenta limite de 2x+y para +30 unidades',
@@ -3649,17 +3781,202 @@ function initMagnataDaFabrica() {
 
     // ── Modals ───────────────────────────────────────────────────
 
+    // ── Tour Guiado Interativo (Passo a Passo com Holofote) ─────
+
+    let currentTourStep = 0;
+    const TOUR_STEPS = [
+        {
+            elementId: 'cartesianWrapperVendas',
+            icon: '🎯',
+            title: '1. O Gráfico e o Objetivo Central',
+            desc: 'Aqui está a <strong>Região Factível</strong>, onde sua fábrica opera dentro das leis e recursos. Seu objetivo é encontrar o <strong>último ponto viável (vértice ótimo Z*)</strong> para lucrar o máximo!',
+        },
+        {
+            elementId: 'tourSliderWrapper',
+            icon: '🎚️',
+            title: '2. Varrer Lucro (Z)',
+            desc: 'Use este <strong>slider</strong> para empurrar a <strong>Reta de Lucro</strong> no gráfico. A reta desliza perpendicular à bússola dos preços. Pare exatamente no ponto de lucro máximo!',
+        },
+        {
+            elementId: 'tourHudLives',
+            icon: '❤️',
+            title: '3. Vidas (3 Corações)',
+            desc: 'Você tem <strong>3 vidas</strong>. Perde 1 vida se o tempo esgotar, se a reta passar direto para fora da região viável, se não atingir a meta mínima ou se errar o ponto na tolerância zero.',
+        },
+        {
+            elementId: 'tourHudCash',
+            icon: '💰',
+            title: '4. Caixa e Custos Fixos',
+            desc: 'Acompanhe seu saldo em dinheiro! Ao fim de cada rodada, é descontado o <strong>custo operacional fixo (aluguel da fábrica)</strong>. Se seu caixa ficar negativo após uma rodada, a fábrica vai à falência!',
+        },
+        {
+            elementId: 'tourFinanceStrip',
+            icon: '📊',
+            title: '5. Custos, Meta Mínima e Tolerância',
+            desc: 'Aqui você acompanha: o <strong>Custo Fixo</strong> da rodada, a <strong>Meta Mínima</strong> exigida pelos acionistas e a <strong>Tolerância</strong> (sua margem de erro permitida, que vai caindo até 0% na Rodada 12)!',
+        },
+        {
+            elementId: 'tourHudTimer',
+            icon: '⏱️',
+            title: '6. Tempo Decrescente',
+            desc: 'O tempo de cada rodada começa em 24s e vai diminuindo conforme as rodadas passam, chegando a até <strong>4 segundos</strong> nas rodadas finais. Seja ágil e decida rápido!',
+        },
+        {
+            elementId: 'tourActionBtns',
+            icon: '🛒',
+            title: '7. Loja de Upgrades & Iniciar Jogo!',
+            desc: 'A cada <strong>2 rodadas completadas</strong>, a <strong>Loja da Fábrica</strong> se abre para comprar estoque, +5s de tempo, vidas e automação. Clique em <strong>Jogar</strong> para começar a primeira rodada!',
+        }
+    ];
+
+    function showTour() {
+        if (!gameTourOverlay) {
+            resetGame();
+            startRound();
+            return;
+        }
+        currentTourStep = 0;
+        gameTourOverlay.style.display = 'block';
+        updateTourStep();
+    }
+
+    function closeTour(startAfter = true) {
+        if (gameTourOverlay) {
+            gameTourOverlay.style.display = 'none';
+        }
+        if (startAfter) {
+            resetGame();
+            startRound();
+        }
+    }
+
+    function updateTourStep() {
+        if (!gameTourOverlay || gameTourOverlay.style.display === 'none') return;
+
+        const step = TOUR_STEPS[currentTourStep];
+        if (!step) {
+            closeTour(true);
+            return;
+        }
+
+        // Atualizar textos e ícones
+        if (tourStepBadge) tourStepBadge.textContent = 'Passo ' + (currentTourStep + 1) + ' de ' + TOUR_STEPS.length;
+        if (tourStepIcon) tourStepIcon.textContent = step.icon;
+        if (tourStepTitle) tourStepTitle.textContent = step.title;
+        if (tourStepDesc) tourStepDesc.innerHTML = step.desc;
+
+        // Atualizar botões de navegação
+        if (btnTourPrev) {
+            btnTourPrev.disabled = (currentTourStep === 0);
+        }
+        if (btnTourNext) {
+            if (currentTourStep === TOUR_STEPS.length - 1) {
+                btnTourNext.textContent = '🚀 Jogar!';
+                btnTourNext.style.width = 'auto';
+                btnTourNext.style.padding = '0 16px';
+            } else {
+                btnTourNext.textContent = '→';
+                btnTourNext.style.width = '44px';
+                btnTourNext.style.padding = '0';
+            }
+        }
+
+        // Posicionar Holofote e Card de forma precisa
+        const targetEl = document.getElementById(step.elementId);
+        if (targetEl) {
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+            setTimeout(() => positionTourSpotlight(step.elementId), 100);
+            setTimeout(() => positionTourSpotlight(step.elementId), 300);
+        }
+    }
+
+    function positionTourSpotlight(targetId) {
+        if (!gameTourOverlay || gameTourOverlay.style.display === 'none') return;
+        const targetEl = document.getElementById(targetId);
+        if (!targetEl || !tourSpotlightBox || !tourTooltipCard) return;
+
+        const rect = targetEl.getBoundingClientRect();
+        const padding = 6;
+
+        const boxLeft = Math.max(0, rect.left - padding);
+        const boxTop = Math.max(0, rect.top - padding);
+        const boxWidth = rect.width + padding * 2;
+        const boxHeight = rect.height + padding * 2;
+
+        // Ajusta o holofote (position: fixed)
+        tourSpotlightBox.style.left = boxLeft + 'px';
+        tourSpotlightBox.style.top = boxTop + 'px';
+        tourSpotlightBox.style.width = boxWidth + 'px';
+        tourSpotlightBox.style.height = boxHeight + 'px';
+
+        // Dimensões do card
+        const cardWidth = Math.min(380, window.innerWidth - 32);
+        const cardHeight = tourTooltipCard.offsetHeight || 250;
+        
+        let cardLeft = 16;
+        let cardTop = 16;
+
+        // Tentar posicionar à direita do elemento
+        if (boxLeft + boxWidth + 16 + cardWidth <= window.innerWidth) {
+            cardLeft = boxLeft + boxWidth + 16;
+            cardTop = Math.min(boxTop, window.innerHeight - cardHeight - 16);
+        }
+        // Ou posicionar à esquerda do elemento
+        else if (boxLeft - 16 - cardWidth >= 0) {
+            cardLeft = boxLeft - 16 - cardWidth;
+            cardTop = Math.min(boxTop, window.innerHeight - cardHeight - 16);
+        }
+        // Se não couber dos lados, posicionar abaixo
+        else if (boxTop + boxHeight + 16 + cardHeight <= window.innerHeight) {
+            cardLeft = Math.max(16, Math.min(boxLeft + (boxWidth - cardWidth) / 2, window.innerWidth - cardWidth - 16));
+            cardTop = boxTop + boxHeight + 16;
+        }
+        // Ou posicionar acima
+        else if (boxTop - 16 - cardHeight >= 0) {
+            cardLeft = Math.max(16, Math.min(boxLeft + (boxWidth - cardWidth) / 2, window.innerWidth - cardWidth - 16));
+            cardTop = boxTop - 16 - cardHeight;
+        }
+        // Em último caso, centralizar na viewport
+        else {
+            cardLeft = Math.max(16, (window.innerWidth - cardWidth) / 2);
+            cardTop = Math.max(16, (window.innerHeight - cardHeight) / 2);
+        }
+
+        cardTop = Math.max(16, Math.min(cardTop, window.innerHeight - cardHeight - 16));
+
+        tourTooltipCard.style.left = cardLeft + 'px';
+        tourTooltipCard.style.top = cardTop + 'px';
+    }
+
+    // Atualiza a posição do holofote se a tela for redimensionada ou rolar durante o tour
+    window.addEventListener('resize', () => {
+        if (gameTourOverlay && gameTourOverlay.style.display === 'block') {
+            const step = TOUR_STEPS[currentTourStep];
+            if (step) positionTourSpotlight(step.elementId);
+        }
+    });
+
+    window.addEventListener('scroll', () => {
+        if (gameTourOverlay && gameTourOverlay.style.display === 'block') {
+            const step = TOUR_STEPS[currentTourStep];
+            if (step) positionTourSpotlight(step.elementId);
+        }
+    }, { passive: true });
+
+    // ── Modals de Resultado ──────────────────────────────────────
+
     function showRejectModal(title, reason, penalty) {
         if (rejectTitle) rejectTitle.textContent = title;
         if (rejectReason) rejectReason.textContent = reason;
         if (rejectPenalty) rejectPenalty.textContent = penalty;
 
         if (rejectModal) rejectModal.classList.add('open');
+        // Não fecha automaticamente: aguarda o jogador clicar no "x" ou no botão continuar
+    }
 
-        setTimeout(() => {
-            if (rejectModal) rejectModal.classList.remove('open');
-            loseLife();
-        }, 2200);
+    function closeRejectModal() {
+        if (rejectModal) rejectModal.classList.remove('open');
+        loseLife();
     }
 
     function showPerfectModal(bonus, optimalZ, opCost, netProfit) {
@@ -3689,12 +4006,12 @@ function initMagnataDaFabrica() {
         }
 
         if (perfectModal) perfectModal.classList.add('open');
+        // Não fecha automaticamente: aguarda o jogador clicar no "x" ou no botão continuar
+    }
 
-        // Auto-close after 2.8s
-        setTimeout(() => {
-            if (perfectModal) perfectModal.classList.remove('open');
-            proceedAfterRound();
-        }, 2800);
+    function closePerfectModal() {
+        if (perfectModal) perfectModal.classList.remove('open');
+        proceedAfterRound();
     }
 
     let onZeroToleranceConfirmCallback = null;
@@ -3736,8 +4053,71 @@ function initMagnataDaFabrica() {
 
     if (btnIniciarJogo) {
         btnIniciarJogo.addEventListener('click', () => {
-            resetGame();
-            startRound();
+            showTour();
+        });
+    }
+
+    if (btnTourNext) {
+        btnTourNext.addEventListener('click', () => {
+            playSoundTick();
+            if (currentTourStep < TOUR_STEPS.length - 1) {
+                currentTourStep++;
+                updateTourStep();
+            } else {
+                closeTour(true);
+            }
+        });
+    }
+
+    if (btnTourPrev) {
+        btnTourPrev.addEventListener('click', () => {
+            playSoundTick();
+            if (currentTourStep > 0) {
+                currentTourStep--;
+                updateTourStep();
+            }
+        });
+    }
+
+    if (btnTourSkip) {
+        btnTourSkip.addEventListener('click', () => {
+            playSoundTick();
+            closeTour(true);
+        });
+    }
+
+    if (btnTourClose) {
+        btnTourClose.addEventListener('click', () => {
+            playSoundTick();
+            closeTour(true);
+        });
+    }
+
+    if (btnClosePerfectModal) {
+        btnClosePerfectModal.addEventListener('click', () => {
+            playSoundTick();
+            closePerfectModal();
+        });
+    }
+
+    if (btnContinuePerfect) {
+        btnContinuePerfect.addEventListener('click', () => {
+            playSoundTick();
+            closePerfectModal();
+        });
+    }
+
+    if (btnCloseRejectModal) {
+        btnCloseRejectModal.addEventListener('click', () => {
+            playSoundTick();
+            closeRejectModal();
+        });
+    }
+
+    if (btnContinueReject) {
+        btnContinueReject.addEventListener('click', () => {
+            playSoundTick();
+            closeRejectModal();
         });
     }
 
@@ -3750,6 +4130,28 @@ function initMagnataDaFabrica() {
     if (sliderVarrerLucro) {
         sliderVarrerLucro.addEventListener('input', () => {
             state.currentZ = parseFloat(sliderVarrerLucro.value);
+            if (inputDirectZ && document.activeElement !== inputDirectZ) {
+                inputDirectZ.value = Math.round(state.currentZ);
+            }
+            updateFormulaDisplay();
+            updateSlider();
+            renderCanvas();
+        });
+    }
+
+    if (inputDirectZ) {
+        inputDirectZ.addEventListener('input', () => {
+            let val = parseFloat(inputDirectZ.value);
+            if (isNaN(val)) val = 0;
+            val = Math.max(0, val);
+            state.currentZ = val;
+            if (sliderVarrerLucro) {
+                if (val > parseFloat(sliderVarrerLucro.max)) {
+                    sliderVarrerLucro.max = Math.ceil(val * 1.3);
+                    if (sliderMaxLabel) sliderMaxLabel.textContent = 'Z = ' + sliderVarrerLucro.max;
+                }
+                sliderVarrerLucro.value = val;
+            }
             updateFormulaDisplay();
             updateSlider();
             renderCanvas();
@@ -3786,12 +4188,16 @@ function initMagnataDaFabrica() {
     // O gradiente é posicionado automaticamente; o jogador interage apenas com o slider de lucro Z.
 
     // Close modals on backdrop click
-    [shopModal, gameOverModal, rejectModal, zeroToleranceModal].forEach(modal => {
+    [shopModal, gameOverModal, rejectModal, perfectModal, zeroToleranceModal].forEach(modal => {
         if (modal) {
             modal.addEventListener('click', (e) => {
                 if (e.target === modal && state.phase !== 'shop') {
                     if (modal === zeroToleranceModal) {
                         closeZeroToleranceModal();
+                    } else if (modal === rejectModal) {
+                        closeRejectModal();
+                    } else if (modal === perfectModal) {
+                        closePerfectModal();
                     } else {
                         modal.classList.remove('open');
                     }
