@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capítulo 2: Setor de Montagem - Atividades - EMAC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="treinamento.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <!-- Faixa superior de Lego -->
+    <div class="lego-topbar"></div>
+    
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="nav-left">
+            <a href="https://www.ufpr.br" target="_blank" rel="noopener noreferrer" class="logo-ufpr-link" title="UFPR - Universidade Federal do Paraná">
+                <img src="./imgs/logo-ufpr.jpg" alt="Logo UFPR" class="logo-ufpr" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+                <div class="logo-ufpr-placeholder" style="display: none;">
+                    <span>UFPR</span>
+                </div>
+            </a>
+        </div>
+        <div class="nav-center">
+            <a href="index.html" style="text-decoration: none; color: inherit;">EMAC</a>
+        </div>
+        <div class="nav-right">
+            <a href="index.html">Início</a>
+            <a href="sobre.html">Sobre</a>
+            <a href="EMAC-LIVRO.pdf" target="_blank" rel="noopener noreferrer">Livro</a>
+            <div id="authContainer" class="auth-container">
+                <button id="btnEntrar" class="auth-btn-entrar">Entrar</button>
+                <div id="userProfile" class="user-profile-badge" style="display: none;">
+                    <img id="userAvatar" src="" alt="Avatar" class="auth-avatar">
+                    <span id="userName" class="auth-user-name"></span>
+                    <button id="btnSair" class="auth-btn-sair">Sair</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="quiz-wrapper">
+        <!-- Navegação Breadcrumb -->
+        <nav class="quiz-breadcrumb" aria-label="Caminho de navegação">
+            <a href="index.html">Início</a>
+            <span class="quiz-breadcrumb-separator">/</span>
+            <a href="centrodetreinamento.html">Centro de Treinamento</a>
+            <span class="quiz-breadcrumb-separator">/</span>
+            <span>Capítulo 2: Setor de Montagem</span>
+        </nav>
+
+        <!-- Banner do Setor -->
+        <div class="quiz-sector-banner">
+            <div class="quiz-banner-info">
+                <div class="quiz-banner-icon" style="background: linear-gradient(180deg, #1e88e5 0%, #1565c0 100%);">
+                    🛠️
+                </div>
+                <div class="quiz-banner-texts">
+                    <h1>Capítulo 2: Setor de Montagem</h1>
+                    <p>Inequações Lineares, Restrições de Bancada e Limite de Horas</p>
+                </div>
+            </div>
+            <div class="quiz-banner-badge-box">
+                <span class="quiz-banner-badge-label">Nível de Domínio Atual</span>
+                <span id="chapterMasteryBadge" class="status-badge-current badge-level-0">Carregando...</span>
+            </div>
+        </div>
+
+        <!-- Container da Aplicação do Quiz (injetado via JS) -->
+        <div id="quiz-app-container"></div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3 class="footer-title">EMAC</h3>
+                <p class="footer-institution">Projeto acadêmico vinculado à <strong>UFPR</strong>.</p>
+            </div>
+            <div class="footer-col">
+                <h3 class="footer-title">Capítulos</h3>
+                <ul class="footer-links">
+                    <li><a href="setordecorte.html">Capítulo 1: Setor de Corte</a></li>
+                    <li><a href="setordemontagem.html">Capítulo 2: Setor de Montagem</a></li>
+                    <li><a href="setordelogistica.html">Capítulo 3: Setor de Logística</a></li>
+                    <li><a href="setordevendas.html">Capítulos 4 e 5: Setor de Vendas</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3 class="footer-title">Recursos</h3>
+                <ul class="footer-links">
+                    <li><a href="EMAC-LIVRO.pdf" target="_blank" rel="noopener noreferrer">Livro Didático</a></li>
+                    <li><a href="https://www.ufpr.br" target="_blank" rel="noopener noreferrer">Portal UFPR</a></li>
+                    <li><a href="centrodetreinamento.html">Centro de Treinamento</a></li>
+                    <li><a href="sobre.html">Sobre o Projeto</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3 class="footer-title">Informações</h3>
+                <ul class="footer-info">
+                    <li><strong>Instituição:</strong> Universidade Federal do Paraná</li>
+                    <li><strong>Curso:</strong> Matemática Industrial / Exatas</li>
+                    <li><strong>Email:</strong> emac@ufpr.br</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 EMAC - UFPR. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts de Suporte -->
+    <script src="main.js"></script>
+    <script src="treinamento-quiz.js"></script>
+    <script src="banco-questoes.js"></script>
+    <script>
+        function updateBadge() {
+            const progress = EMACTreinamento.getStoredProgress();
+            const currentLevel = progress[2] || 0;
+            const levelInfo = EMACTreinamento.MASTERY_LEVELS[currentLevel];
+            const badgeEl = document.getElementById('chapterMasteryBadge');
+            if (badgeEl) {
+                badgeEl.className = `status-badge-current ${levelInfo.class}`;
+                badgeEl.innerHTML = `${levelInfo.label} (${currentLevel}/4)`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateBadge();
+            EMACTreinamento.init({
+                chapterId: 2,
+                chapterTitle: 'Capítulo 2: Setor de Montagem',
+                chapterSubtitle: 'Inequações e Tempo Limite',
+                accentColor: '#1e88e5',
+                questions: BANCO_QUESTOES_EMAC[2] || []
+            });
+        });
+    </script>
+</body>
+</html>

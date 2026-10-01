@@ -500,7 +500,7 @@
                         <div class="meter-segment"></div>
                     </div>
                     <div class="block-actions">
-                        <button class="btn-practice" type="button">Realizar Atividades</button>
+                        <a href="treinamento-cap1.html" class="btn-practice" style="text-decoration: none;">Realizar Atividades</a>
                     </div>
                 </div>
             </article>
@@ -529,7 +529,7 @@
                         <div class="meter-segment"></div>
                     </div>
                     <div class="block-actions">
-                        <button class="btn-practice" type="button">Realizar Atividades</button>
+                        <a href="treinamento-cap2.html" class="btn-practice" style="text-decoration: none;">Realizar Atividades</a>
                     </div>
                 </div>
             </article>
@@ -558,7 +558,7 @@
                         <div class="meter-segment"></div>
                     </div>
                     <div class="block-actions">
-                        <button class="btn-practice" type="button">Realizar Atividades</button>
+                        <a href="treinamento-cap3.html" class="btn-practice" style="text-decoration: none;">Realizar Atividades</a>
                     </div>
                 </div>
             </article>
@@ -587,7 +587,7 @@
                         <div class="meter-segment"></div>
                     </div>
                     <div class="block-actions">
-                        <button class="btn-practice" type="button">Realizar Atividades</button>
+                        <a href="treinamento-cap4.html" class="btn-practice" style="text-decoration: none;">Realizar Atividades</a>
                     </div>
                 </div>
             </article>
@@ -616,7 +616,7 @@
                         <div class="meter-segment"></div>
                     </div>
                     <div class="block-actions">
-                        <button class="btn-practice" type="button">Realizar Atividades</button>
+                        <a href="treinamento-cap5.html" class="btn-practice" style="text-decoration: none;">Realizar Atividades</a>
                     </div>
                 </div>
             </article>
@@ -723,6 +723,16 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            try {
+                const saved = localStorage.getItem('emac_chapters_mastery');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    chapterProgress = { ...chapterProgress, ...parsed };
+                }
+            } catch (e) {
+                console.error("Erro ao carregar progresso:", e);
+            }
+
             for (let i = 1; i <= 5; i++) {
                 updateChapterUI(i);
             }
